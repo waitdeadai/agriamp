@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AgriAMP — Guión Demo Video</title>
+<title>AgriAMP — Guión Demo + Pitch</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -13,7 +13,7 @@
     font-size: 15px;
     line-height: 1.6;
     padding: 16px;
-    max-width: 900px;
+    max-width: 960px;
     margin: 0 auto;
   }
   h1 {
@@ -22,6 +22,15 @@
     text-align: center;
     margin-bottom: 6px;
     font-family: monospace;
+  }
+  h2 {
+    font-size: 18px;
+    color: #ffd93d;
+    margin: 20px 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 6px;
   }
   .meta {
     text-align: center;
@@ -67,7 +76,7 @@
     font-size: 14px;
   }
   .action::before {
-    content: "HACER: ";
+    content: "PANTALLA: ";
     color: #42A5F5;
     font-weight: bold;
     font-size: 12px;
@@ -82,7 +91,7 @@
     font-style: italic;
   }
   .say::before {
-    content: "VOZ: ";
+    content: "DECIR: ";
     color: #00ff88;
     font-weight: bold;
     font-size: 12px;
@@ -99,6 +108,20 @@
   .tip::before {
     content: "TIP: ";
     color: #ffd93d;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .danger {
+    background: #2a0a0a;
+    border-left: 3px solid #ff6b6b;
+    padding: 8px 12px;
+    margin: 8px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+  }
+  .danger::before {
+    content: "NO DECIR: ";
+    color: #ff6b6b;
     font-weight: bold;
     font-size: 12px;
   }
@@ -135,171 +158,288 @@
     margin: 16px 0;
     font-family: monospace;
   }
+  .benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 10px 0;
+  }
+  .benchmark-table th {
+    background: #0d2818;
+    color: #00ff88;
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  .benchmark-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #333;
+  }
+  .benchmark-table tr.ours {
+    background: #0d281822;
+    font-weight: bold;
+  }
+  .section-why {
+    background: #1a1a2e;
+    border: 1px solid #42A5F544;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 12px 0;
+  }
 </style>
 </head>
 <body>
 
-<h1>GUIÓN DEMO VIDEO — AgriAMP</h1>
-<p class="meta">Duración target: 2:30 - 3:00 min | Grabar con OBS/pantalla | Voz en off o subtítulos</p>
-<div class="total-time">DURACIÓN TOTAL: ~2:40</div>
+<h1>GUIÓN DEMO + PITCH — AgriAMP</h1>
+<p class="meta">Pitch en vivo 3 min | Demo EN VIVO con GPU local | Hackathon Aleph M26 Biotech</p>
+<div class="total-time">DURACIÓN TOTAL: 3:00</div>
 
-<!-- PRE-GRABACIÓN -->
+<!-- ═══════════════════════════════════════════ -->
+<h2>Pre-Demo: Setup</h2>
+<!-- ═══════════════════════════════════════════ -->
+
 <div class="checklist">
-  <h3>Antes de grabar</h3>
+  <h3>Antes del pitch — preparar</h3>
   <ul>
-    <li>Abrir la app de Streamlit (URL de cloud o localhost:8501)</li>
-    <li>Verificar que carga con resultados de Botrytis cinerea</li>
-    <li>Cerrar notificaciones / popups del sistema</li>
-    <li>Resolución: 1920x1080 (o la más alta que tengas)</li>
-    <li>Modo oscuro del navegador si es posible (se ve mejor)</li>
-    <li>Tab única — sin otras tabs visibles</li>
-    <li>Si grabás voz: lugar silencioso, hablar claro y pausado</li>
-    <li>Si NO grabás voz: agregar subtítulos después o solo mostrar la app</li>
+    <li>Cerrar LM Studio y todo lo que use GPU</li>
+    <li>Abrir terminal: <code>cd C:\Users\User\Music\BOTI\AGRIAMP</code></li>
+    <li>Correr: <code>streamlit run app.py</code></li>
+    <li>Verificar que abre en <b>localhost:8501</b></li>
+    <li>NO clickear "Ejecutar Pipeline" todavía — dejarlo en la pantalla de bienvenida</li>
+    <li>Seleccionar "Botrytis cinerea" en el sidebar</li>
+    <li>Verificar: sidebar muestra "Podredumbre gris | Uvas, frutillas, tomates"</li>
+    <li>Abrir el expander "Qué son los péptidos antimicrobianos" para verificar que carga</li>
+    <li>Cerrar el expander — dejarlo cerrado para la demo</li>
+    <li>Pantalla completa del navegador (F11)</li>
+    <li>Tener este guión abierto en el celular o en otra pantalla</li>
   </ul>
 </div>
 
-<hr>
+<!-- ═══════════════════════════════════════════ -->
+<h2>Pitch en Vivo: 3 Minutos</h2>
+<!-- ═══════════════════════════════════════════ -->
 
 <!-- ESCENA 1 -->
 <div class="scene">
   <div class="scene-header">
-    <span class="scene-title">Escena 1 — Apertura</span>
-    <span class="scene-time">0:00 - 0:15</span>
+    <span class="scene-title">1 — Hook: El Problema Real</span>
+    <span class="scene-time">0:00 - 0:30</span>
   </div>
-  <div class="action">Mostrar la app recién cargada. El logo + título "AgriAMP" deben ser visibles. El sidebar a la izquierda con "Botrytis cinerea" seleccionado.</div>
-  <div class="say">"AgriAMP es un pipeline agéntico de inteligencia artificial para diseñar péptidos antimicrobianos — biopesticidas naturales — contra patógenos de cultivos."</div>
-  <div class="tip">Si la app muestra resultados inmediatamente (cloud mode), perfecto. Si es local, todavía no clickear nada.</div>
+  <div class="action">App en pantalla de bienvenida. Logo + título "AgriAMP" visible. Sidebar con Botrytis cinerea seleccionado, info del patógeno visible.</div>
+  <div class="say">"En Mendoza, un estudio de CONICET documentó pérdidas del 71 por ciento de los racimos de uva por Botrytis cinerea — el hongo que causa la podredumbre gris. Argentina usa más de 500 millones de litros de agroquímicos por año. Los patógenos desarrollan resistencia. Y en marzo de 2026, la Unión Europea prohíbe los neonicotinoides — con 106 principios activos argentinos ya prohibidos en Europa. Nuestros vinos están en riesgo."</div>
+  <div class="tip">Datos verificados: CONICET (71% racimos), SPRINT-H2020 (500M litros), EU ban neonicotinoides marzo 2026, EU-Mercosur 106 pesticidas.</div>
+  <div class="danger">"Mata todas las bacterias" — Botrytis es HONGO, decir "antifúngico". No decir "diseñamos un antibiótico" sino "candidatos in silico".</div>
 </div>
 
 <!-- ESCENA 2 -->
 <div class="scene">
   <div class="scene-header">
-    <span class="scene-title">Escena 2 — El problema</span>
-    <span class="scene-time">0:15 - 0:30</span>
+    <span class="scene-title">2 — Qué son los Péptidos (la solución)</span>
+    <span class="scene-time">0:30 - 1:00</span>
   </div>
-  <div class="action">Mostrar el sidebar: el selector de patógeno con "Botrytis cinerea (Podredumbre gris)" y la info del patógeno (Uvas, Mendoza, 30% pérdida).</div>
-  <div class="say">"Nuestro caso: Botrytis cinerea, el hongo que causa podredumbre gris en uvas de Mendoza. Destruye hasta el 30 por ciento de la cosecha en temporadas húmedas. La defensa estándar son fungicidas químicos — Argentina usa más de 500 millones de litros al año."</div>
+  <div class="action">Abrir el expander "Qué son los péptidos antimicrobianos (AMPs)?" en el sidebar. Dejar que se lea el contenido.</div>
+  <div class="say">"La alternativa existe — y tiene 3 mil millones de años de evolución. Los péptidos antimicrobianos son cadenas cortas de aminoácidos del sistema inmune innato de todos los organismos vivos. Funcionan en 3 pasos: se atraen a la membrana del patógeno por carga eléctrica, penetran con su cara hidrofóbica, y forman poros que destruyen la célula."</div>
+  <div class="say">"La diferencia clave con los pesticidas químicos: un pesticida ataca UNA vía metabólica — el hongo muta y genera resistencia. Un AMP ataca la estructura fundamental de la membrana. Es la diferencia entre forzar una cerradura y tirar la puerta abajo."</div>
+  <div class="tip">Esta es la frase killer. Pausar después de "tirar la puerta abajo" — dejar que aterrice.</div>
 </div>
 
 <!-- ESCENA 3 -->
 <div class="scene">
   <div class="scene-header">
-    <span class="scene-title">Escena 3 — Workflow agéntico</span>
-    <span class="scene-time">0:30 - 0:55</span>
+    <span class="scene-title">3 — Demo en Vivo: Ejecutar Pipeline</span>
+    <span class="scene-time">1:00 - 1:30</span>
   </div>
-  <div class="action">Clickear el expander "Workflow Agéntico — 6 pasos completados" para abrirlo. Scroll lento por los 6 pasos para que se lean.</div>
-  <div class="say">"El agente ejecuta un pipeline de 6 pasos. Primero consulta una base de datos de más de 4,600 péptidos antimicrobianos conocidos. Genera variantes optimizadas. Calcula embeddings con ESM-2, un modelo de lenguaje proteico de 650 millones de parámetros de Meta. Analiza 12 propiedades bioquímicas. Entrena un clasificador con AUC 0.977. Y filtra toxicidad."</div>
-  <div class="tip">No apurarse — dejar que la cámara muestre cada paso con su ícono y mensaje. Es lo más impresionante para los jurados.</div>
+  <div class="action">Cerrar el expander de AMPs. Clickear <b>"Ejecutar Pipeline AgriAMP"</b> (botón verde). Los 6 pasos se ejecutan en tiempo real (~8-10 segundos).</div>
+  <div class="say">"Le decimos a AgriAMP: 'Tengo Botrytis en mi Malbec'. Y el agente ejecuta un pipeline completo de bioinformática."</div>
+  <div class="say"><i>(Mientras corren los pasos, ir narrando)</i> "Consulta una base de datos de más de 4,600 péptidos... genera variantes optimizadas... calcula embeddings con ESM-2, un modelo de lenguaje proteico de 650 millones de parámetros... analiza 12 propiedades bioquímicas... entrena el clasificador... filtra toxicidad... listo."</div>
+  <div class="tip">El pipeline tarda ~8-10 segundos. Si tarda más, decir "ESM-2 está procesando 160 secuencias con la GPU..." para llenar el tiempo. Si es la primera corrida del día puede tardar ~15s por carga del modelo.</div>
+  <div class="danger">Si crashea: tener la URL de cloud abierta en otra tab (https://agriamp.streamlit.app/) como backup. Decir "también está desplegado en la nube".</div>
 </div>
 
 <!-- ESCENA 4 -->
 <div class="scene">
   <div class="scene-header">
-    <span class="scene-title">Escena 4 — Top Candidatos</span>
-    <span class="scene-time">0:55 - 1:20</span>
+    <span class="scene-title">4 — Caso Real: Epinecidin-1</span>
+    <span class="scene-time">1:30 - 2:00</span>
   </div>
-  <div class="action">Clickear tab "Top Candidatos". Mostrar las 4 métricas arriba (candidatos analizados, pasaron toxicidad, top score, carga promedio). Luego scroll al bar chart de top 10.</div>
-  <div class="say">"De 160 candidatos analizados, 159 pasaron el screening de toxicidad. El top score es 0.88. Acá vemos los 10 mejores candidatos — LL-37, Magainin 2, Dermaseptina — péptidos con actividad antimicrobiana comprobada, más variantes optimizadas generadas por nuestro pipeline."</div>
-  <div class="action">Scroll lento a la tabla de candidatos. Hacer hover sobre una fila para mostrar los detalles.</div>
-  <div class="say">"Cada candidato tiene su score compuesto, probabilidad AMP, carga neta, peso molecular, momento hidrofóbico, y riesgo de toxicidad."</div>
+  <div class="action">Clickear tab <b>"🌍 Caso Real"</b> (primera tab). Mostrar los datos de CONICET (71%, 57%, 53%). Scroll a la tabla de AMPs validados.</div>
+  <div class="say">"Esto no es teórico. Epinecidin-1 es un péptido del mero — un pez — con actividad antifúngica comprobada contra Botrytis cinerea, publicado en el Journal of Agricultural and Food Chemistry. Su MIC es 12.5 micromoles por litro."</div>
+  <div class="say">"Los investigadores crearon EPI-4 — le agregaron una lisina al final — y la actividad se duplicó: MIC 6 micromoles por litro. Esa modificación — agregar un aminoácido catiónico — es exactamente lo que hace nuestro generador de variantes automáticamente."</div>
+  <div class="action">Scroll a la sección "Epinecidin en nuestros resultados" — mostrar que EPI-4 tiene score más alto que Epinecidin-1.</div>
+  <div class="say">"Y nuestro pipeline lo confirma: EPI-4 tiene un score más alto que Epinecidin-1. El sistema redescubre lo que los investigadores validaron en el laboratorio."</div>
+  <div class="tip">Este es el momento más fuerte. Los jurados de comp bio van a apreciar que el scoring valida datos experimentales publicados.</div>
 </div>
 
 <!-- ESCENA 5 -->
 <div class="scene">
   <div class="scene-header">
-    <span class="scene-title">Escena 5 — Análisis de Propiedades</span>
-    <span class="scene-time">1:20 - 1:45</span>
+    <span class="scene-title">5 — Benchmark vs SOTA</span>
+    <span class="scene-time">2:00 - 2:25</span>
   </div>
-  <div class="action">Clickear tab "Análisis de Propiedades". Mostrar el radar chart (candidato vs perfil ideal). Luego mostrar el feature importance chart.</div>
-  <div class="say">"El radar compara nuestro mejor candidato contra el perfil de un AMP ideal. Carga, anfipacidad, estabilidad, selectividad, baja toxicidad. Y el clasificador nos dice qué features son más predictivas — carga neta y momento hidrofóbico, exactamente lo que la literatura científica indica."</div>
-  <div class="action">Scroll rápido por las distribuciones de propiedades (carga, momento hidrofóbico, peso molecular).</div>
+  <div class="action">Clickear tab <b>"📈 Benchmark vs SOTA"</b>. Mostrar la tabla comparativa. Luego mostrar el bar chart de AUC.</div>
+  <div class="say">"Nuestro clasificador alcanza un AUC de 0.977 y un MCC de 0.858 en validación cruzada estratificada de 5 folds, entrenado sobre 5,200 secuencias. Esto es competitivo con herramientas publicadas como PLAPD — que usa ESM-2 con CNN y Transformer y alcanza AUC 0.922 — y amPEPpy que usa Random Forest como nosotros."</div>
+  <div class="action">Scroll a "Diferenciador de AgriAMP".</div>
+  <div class="say">"Pero el diferenciador no es el clasificador — es el pipeline completo. Ninguna otra herramienta ofrece un workflow integrado que va desde la selección del patógeno hasta candidatos peptídicos rankeados y filtrados por toxicidad, accesible para un agrónomo."</div>
+  <div class="tip">No competir por AUC — amPEPpy reporta 0.99 en su propio dataset. El argumento es: pipeline end-to-end, no solo clasificador.</div>
 </div>
 
 <!-- ESCENA 6 -->
 <div class="scene">
   <div class="scene-header">
-    <span class="scene-title">Escena 6 — Visor de Secuencias</span>
-    <span class="scene-time">1:45 - 2:10</span>
+    <span class="scene-title">6 — Validación + Cierre</span>
+    <span class="scene-time">2:25 - 3:00</span>
   </div>
-  <div class="action">Clickear tab "Visor de Secuencias". Mostrar la secuencia coloreada del top candidato (LL-37 o Magainin 2). Mostrar la leyenda de colores.</div>
-  <div class="say">"Cada aminoácido está coloreado por tipo: amarillo hidrofóbico, azul catiónico, rojo aniónico, verde polar. Esto permite visualizar la anfipacidad — la clave de la actividad antimicrobiana."</div>
-  <div class="action">Scroll al score breakdown chart. Mostrar la composición del score.</div>
-  <div class="say">"El score compuesto combina probabilidad AMP, carga, anfipacidad, estabilidad, y baja toxicidad."</div>
-  <div class="action">Scroll al helical wheel. Pausar 3 segundos para que se vea bien.</div>
-  <div class="say">"El helical wheel muestra cómo se distribuyen los aminoácidos en una hélice alfa — los hidrofóbicos de un lado, los cargados del otro. Esta distribución anfipática es lo que permite al péptido insertarse en la membrana del patógeno y destruirla."</div>
+  <div class="action">Clickear tab <b>"✅ Validación ML"</b>. Mostrar las 6 métricas arriba (AUC, MCC, Accuracy, F1, Sensibilidad, Especificidad). Mostrar la matriz de confusión y la curva ROC.</div>
+  <div class="say">"Métricas completas, out-of-fold, sin data leakage. AUC 0.977, MCC 0.858, accuracy 92.9%. Datos de entrenamiento: 2,600 AMPs positivos, 2,600 negativos, del benchmark estándar modlAMP."</div>
+  <div class="action">Pausa. Mirar a los jueces.</div>
+  <div class="say">"El siguiente paso es síntesis química — 80 a 250 dólares por péptido para screening — y ensayos de inhibición in vitro con INTA Mendoza. El mercado de biopesticidas alcanza 17 a 18 mil millones de dólares para 2030. Y hoy no existe ningún biopesticida basado en péptidos aprobado para vid. AgriAMP — de tu viñedo a la solución biológica."</div>
+  <div class="tip">Terminar mirando a los jueces, no a la pantalla. Sonreír.</div>
 </div>
 
-<!-- ESCENA 7 -->
-<div class="scene">
-  <div class="scene-header">
-    <span class="scene-title">Escena 7 — Validación ML</span>
-    <span class="scene-time">2:10 - 2:25</span>
-  </div>
-  <div class="action">Clickear tab "Validación ML". Mostrar el AUC-ROC y la curva ROC.</div>
-  <div class="say">"El clasificador Random Forest alcanza un AUC de 0.977 en validación cruzada de 5 folds — rendimiento robusto sobre embeddings de ESM-2 combinados con propiedades bioquímicas."</div>
-  <div class="tip">Pausá en el número 0.977 — es un número fuerte y los jurados lo van a notar.</div>
+<!-- ═══════════════════════════════════════════ -->
+<h2>Datos Rápidos (si preguntan)</h2>
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-why">
+<b>Nuestras métricas (todas out-of-fold):</b>
+<table class="benchmark-table">
+  <tr><th>Métrica</th><th>Valor</th><th>Qué significa</th></tr>
+  <tr class="ours"><td>AUC-ROC</td><td>0.977</td><td>Área bajo la curva ROC — discriminación AMP vs non-AMP</td></tr>
+  <tr class="ours"><td>MCC</td><td>0.858</td><td>Matthews Correlation Coefficient — la métrica más robusta para clasificación binaria</td></tr>
+  <tr class="ours"><td>Accuracy</td><td>92.9%</td><td>Porcentaje de predicciones correctas</td></tr>
+  <tr class="ours"><td>F1-Score</td><td>0.929</td><td>Media armónica de precisión y sensibilidad</td></tr>
+  <tr class="ours"><td>Sensibilidad</td><td>0.932</td><td>Detecta el 93.2% de los AMPs reales</td></tr>
+  <tr class="ours"><td>Especificidad</td><td>0.927</td><td>Descarta el 92.7% de los non-AMPs correctamente</td></tr>
+  <tr class="ours"><td>Training data</td><td>5,200 seqs</td><td>2,600 AMPs + 2,600 non-AMPs (modlAMP)</td></tr>
+</table>
 </div>
 
-<!-- ESCENA 8 -->
+<div class="section-why">
+<b>Comparación vs herramientas publicadas:</b>
+<table class="benchmark-table">
+  <tr><th>Herramienta</th><th>Año</th><th>AUC</th><th>MCC</th><th>Método</th><th>Publicación</th></tr>
+  <tr class="ours"><td>AgriAMP</td><td>2026</td><td>0.977</td><td>0.858</td><td>ESM-2 + RF</td><td>Este trabajo</td></tr>
+  <tr><td>amPEPpy</td><td>2020</td><td>0.99*</td><td>0.90*</td><td>RF + features</td><td>Biology Direct</td></tr>
+  <tr><td>PLAPD</td><td>2025</td><td>0.922</td><td>0.749</td><td>ESM-2 + CNN + Transf.</td><td>Methods Cell Biol.</td></tr>
+  <tr><td>AMP-RNNpro</td><td>2024</td><td>—</td><td>—</td><td>BiLSTM (97% acc)</td><td>Sci. Reports</td></tr>
+</table>
+<p style="font-size:12px;color:#888;margin-top:6px;">*amPEPpy: métricas en su propio dataset custom, no directamente comparable.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>Respuestas a Preguntas de Jurados</h2>
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="scene" style="border-left: 4px solid #ff6b6b;">
+  <p><b>"¿Por qué Random Forest y no deep learning?"</b></p>
+  <div class="say">"El poder predictivo viene de los embeddings de ESM-2 — representaciones de 1,280 dimensiones aprendidas de 65 millones de secuencias proteicas. El clasificador actúa sobre features que ya capturan estructura y evolución. amPEPpy, que es estado del arte con AUC 0.99, también usa Random Forest. El RF es interpretable — podemos mostrar feature importances — y entrena en segundos, lo que permite la demo en vivo."</div>
+
+  <p style="margin-top:14px;"><b>"¿Cómo validan los péptidos?"</b></p>
+  <div class="say">"Es un pipeline in silico — el output son candidatos para validación experimental. Epinecidin-1 ya fue validado contra Botrytis con MIC 12.5 micromoles. Nuestro pipeline lo identifica correctamente y además predice que la variante EPI-4 es mejor — lo cual coincide con los datos publicados. El siguiente paso es síntesis química, 80 a 250 dólares por péptido, y ensayos in vitro. ProteoGPT demostró que este approach funciona: el 61.9% de sus péptidos generados por IA mostraron inhibición in vitro."</div>
+
+  <p style="margin-top:14px;"><b>"¿Por qué el MCC y no solo AUC?"</b></p>
+  <div class="say">"El MCC es la métrica más robusta para clasificación binaria porque penaliza tanto falsos positivos como falsos negativos sin importar el desbalance de clases. Nuestro MCC de 0.858 supera al de PLAPD que reporta 0.749 usando una arquitectura más compleja con CNN y Transformer."</div>
+
+  <p style="margin-top:14px;"><b>"¿Cómo manejan la selectividad?"</b></p>
+  <div class="say">"La selectividad viene de la diferencia en composición de membrana: las membranas microbianas tienen más fosfolípidos aniónicos que las células vegetales. Nuestro scoring prioriza carga moderada más 3 a más 6 y anfipacidad alta. El screening de toxicidad filtra candidatos con GRAVY alto, carga excesiva, o motivos hemolíticos."</div>
+
+  <p style="margin-top:14px;"><b>"¿Qué dataset usaron?"</b></p>
+  <div class="say">"modlAMP — el benchmark estándar de la comunidad. 2,600 AMPs verificados y 2,600 secuencias de UniProt como negativos. Más 27 péptidos antifúngicos curados de la literatura con MIC publicados. Los embeddings pre-computados de ESM-2 para todo el dataset nos permiten entrenar sobre las 5,200 secuencias completas en cada corrida."</div>
+
+  <p style="margin-top:14px;"><b>"¿Por qué no ESM-3 / ESM Cambrian?"</b></p>
+  <div class="say">"ESM Cambrian es el upgrade natural para la versión 2. ESM-2 tiene mayor base instalada, documentación, y compatibilidad con HuggingFace transformers. Es la elección pragmática para un pipeline que necesita ser reproducible y desplegable."</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>Tabs de la App — Qué Mostrar en Cada Una</h2>
+<!-- ═══════════════════════════════════════════ -->
+
 <div class="scene">
   <div class="scene-header">
-    <span class="scene-title">Escena 8 — Cierre</span>
-    <span class="scene-time">2:25 - 2:40</span>
+    <span class="scene-title">Tab 1: 🌍 Caso Real</span>
   </div>
-  <div class="action">Volver al sidebar. Cambiar patógeno a "Fusarium graminearum" para mostrar que funciona con múltiples patógenos. Esperar que cargue.</div>
-  <div class="say">"El pipeline funciona con cualquier patógeno agrícola. Fusarium en trigo, Xanthomonas en cítricos, Ralstonia en tomates. De tu cultivo a la solución biológica."</div>
-  <div class="action">Volver a Botrytis. Mostrar el título "AgriAMP" con el logo como cierre.</div>
-  <div class="say">"AgriAMP — péptidos antimicrobianos diseñados por inteligencia artificial para proteger la agricultura del futuro."</div>
+  <div class="action">Datos CONICET (71%, 57%, 53%) | Exportaciones $800M/año | 106 pesticidas banned | Tabla de AMPs validados (Epinecidin MIC 12.5, EPI-4 MIC 6, Rs-AFP2 MIC 3, NaD1 MIC 2) | Epinecidin en nuestros resultados (EPI-4 > Epinecidin-1) | Próximo paso: INTA Mendoza</div>
+  <div class="tip">Esta tab es la más importante para el mentor. Muestra que tenemos datos reales y validación con literatura publicada.</div>
+</div>
+
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Tab 2: 🏆 Top Candidatos</span>
+  </div>
+  <div class="action">4 métricas arriba (candidatos, pasaron toxicidad, top score, carga promedio) | Bar chart top 10 con línea umbral 0.70 | Tabla completa sorteable</div>
+  <div class="tip">Mostrar que los top candidatos son péptidos conocidos (LL-37, Cecropin B, etc.) MÁS variantes generadas por nuestro pipeline. Eso valida que el scoring funciona.</div>
+</div>
+
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Tab 3: 📊 Análisis de Propiedades</span>
+  </div>
+  <div class="action">Radar chart (candidato vs perfil ideal) | Feature importances (ESM2_PC3, aa_M, net_charge) | Distribuciones de carga y momento hidrofóbico</div>
+  <div class="tip">El radar chart muestra visualmente por qué un candidato es bueno. Las feature importances validan que el modelo aprendió lo correcto (carga + anfipacidad = literatura AMP).</div>
+</div>
+
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Tab 4: 🧬 Visor de Secuencias</span>
+  </div>
+  <div class="action">Secuencia coloreada (amarillo=hidrofóbico, azul=catiónico) | Score breakdown (5 componentes) | Helical wheel (cara hidrofóbica vs catiónica)</div>
+  <div class="tip">El helical wheel es visualmente impactante. Mostrar cómo los aminoácidos se separan en dos caras — eso es la anfipacidad que permite la inserción en la membrana.</div>
+</div>
+
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Tab 5: 📈 Benchmark vs SOTA</span>
+  </div>
+  <div class="action">Tabla comparativa (AgriAMP vs amPEPpy, PLAPD, AMP-RNNpro) | Bar chart AUC | Métricas completas (AUC 0.977, MCC 0.858, Acc 92.9%, F1 0.929)</div>
+  <div class="tip">La narrativa NO es "tenemos el mejor AUC". Es: "somos competitivos en métricas Y ofrecemos un pipeline end-to-end que nadie más tiene para agricultura."</div>
+</div>
+
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Tab 6: ✅ Validación ML</span>
+  </div>
+  <div class="action">6 métricas arriba (AUC, MCC, Acc, F1, Sens, Spec) | Matriz de confusión (heatmap) | Curva ROC (OOF + Training) | AUC por fold de CV</div>
+  <div class="tip">Mostrar que la curva ROC tiene dos líneas: OOF (honesta) y Training. Los jurados PhDs van a apreciar que reportamos OOF y no solo training metrics.</div>
+</div>
+
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Tab 7: 📥 Exportar</span>
+  </div>
+  <div class="action">Botones de descarga CSV y FASTA | Resumen JSON del análisis</div>
+  <div class="tip">Solo mencionar que existe. "Los resultados se exportan en CSV y FASTA para laboratorio."</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>Sidebar — Qué Mostrar</h2>
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="scene">
+  <div class="action">Selector de patógeno: Botrytis cinerea (default) | Info: Hongo, Uvas, Mendoza</div>
+  <div class="action">Expander "Qué son los AMPs": mecanismo 3 pasos, analogía cerradura/puerta</div>
+  <div class="action">Expander "Cómo funciona AgriAMP": 6 tools, score formula</div>
+  <div class="action">Botón "Ejecutar Pipeline AgriAMP" (verde, solo en local)</div>
+  <div class="tip">Si queda tiempo al final, cambiar a otro patógeno (Fusarium) para mostrar que funciona con múltiples targets. "El pipeline funciona con cualquier patógeno agrícola."</div>
 </div>
 
 <hr>
 
-<!-- POST-GRABACIÓN -->
-<div class="checklist">
-  <h3>Después de grabar</h3>
-  <ul>
-    <li>Revisar que todos los tabs se ven claros</li>
-    <li>Verificar que la voz se escucha bien (si grabaron voz)</li>
-    <li>Recortar inicio/final si hay silencio</li>
-    <li>Verificar duración final: 2:30 - 3:00 máx</li>
-    <li>Formato: MP4, 1080p</li>
-    <li>Subir a YouTube (no listado) o Google Drive (público) para pegar link en DoraHacks</li>
-  </ul>
-</div>
+<!-- ═══════════════════════════════════════════ -->
+<h2>Timing Resumido</h2>
+<!-- ═══════════════════════════════════════════ -->
 
-<div class="checklist">
-  <h3>Si NO querés grabar voz</h3>
-  <ul>
-    <li>Grabá solo la pantalla sin audio</li>
-    <li>El video silencioso con la navegación por la app ya es suficiente</li>
-    <li>Los gráficos y datos hablan solos</li>
-    <li>Opcionalmente agregá subtítulos con el texto de "VOZ" de cada escena</li>
-  </ul>
-</div>
+<table style="width:100%; font-size:14px; border-collapse:collapse;">
+  <tr style="border-bottom:1px solid #333;"><td style="padding:8px;color:#00ff88;width:60px;font-weight:bold;">0:00</td><td style="padding:8px;"><b>HOOK:</b> Botrytis Mendoza — 71% pérdida (CONICET), 500M litros agroquímicos, EU ban</td></tr>
+  <tr style="border-bottom:1px solid #333;"><td style="padding:8px;color:#00ff88;font-weight:bold;">0:30</td><td style="padding:8px;"><b>AMPs:</b> Qué son, mecanismo 3 pasos, "tirar la puerta abajo"</td></tr>
+  <tr style="border-bottom:1px solid #333;background:#0d281833;"><td style="padding:8px;color:#00ff88;font-weight:bold;">1:00</td><td style="padding:8px;"><b>DEMO EN VIVO:</b> Click → 6 pasos → ~8-10 segundos</td></tr>
+  <tr style="border-bottom:1px solid #333;"><td style="padding:8px;color:#00ff88;font-weight:bold;">1:30</td><td style="padding:8px;"><b>CASO REAL:</b> Epinecidin-1 MIC 12.5, EPI-4 MIC 6, pipeline lo confirma</td></tr>
+  <tr style="border-bottom:1px solid #333;"><td style="padding:8px;color:#00ff88;font-weight:bold;">2:00</td><td style="padding:8px;"><b>BENCHMARK:</b> AUC 0.977, MCC 0.858 vs PLAPD 0.922 + pipeline end-to-end único</td></tr>
+  <tr><td style="padding:8px;color:#00ff88;font-weight:bold;">2:25</td><td style="padding:8px;"><b>CIERRE:</b> Validación ML, próximo paso síntesis, mercado $17B 2030, "de tu viñedo a la solución biológica"</td></tr>
+</table>
 
-<hr>
-
-<!-- GUIÓN ALTERNATIVO: PITCH EN VIVO 3 MIN -->
-<div class="scene" style="border-left: 4px solid #ffd93d;">
-  <div class="scene-header">
-    <span class="scene-title" style="color: #ffd93d;">ALTERNATIVA: Pitch en vivo 3 min</span>
-    <span class="scene-time">3:00</span>
-  </div>
-  <p style="margin-bottom:10px;">Si además del video te toca presentar en vivo, este es el flow:</p>
-  <table style="width:100%; font-size:14px; border-collapse: collapse;">
-    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;width:50px;"><b>0:00</b></td><td style="padding:6px;"><b>HOOK:</b> "En Mendoza perdemos hasta 30-50% de la cosecha de Malbec por Botrytis cinerea. ¿Y si pudiéramos reemplazar los fungicidas con las armas más antiguas de la naturaleza?"</td></tr>
-    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>0:20</b></td><td style="padding:6px;"><b>PROBLEMA:</b> 500M+ litros agroquímicos/año. Resistencia. EU bans. Gap entre ciencia y campo.</td></tr>
-    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>0:45</b></td><td style="padding:6px;"><b>INSIGHT:</b> ProteoGPT existe pero es para microbiólogos. Nadie lo hace accesible para agrónomos.</td></tr>
-    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>1:05</b></td><td style="padding:6px;"><b>SOLUCIÓN:</b> "AgriAMP — le contás tu problema, te diseña la solución biológica."</td></tr>
-    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>1:15</b></td><td style="padding:6px;"><b>DEMO EN VIVO:</b> Abrir app → workflow 6 pasos → top candidatos → radar → helical wheel</td></tr>
-    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>2:15</b></td><td style="padding:6px;"><b>TÉCNICO:</b> ESM-2 650M params, 65M secuencias, RF AUC 0.977, 12 propiedades</td></tr>
-    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>2:40</b></td><td style="padding:6px;"><b>NEGOCIO:</b> Mercado biopesticidas $17-18B 2030. Síntesis $80-250/candidato.</td></tr>
-    <tr><td style="padding:6px;color:#00ff88;"><b>2:50</b></td><td style="padding:6px;"><b>CIERRE:</b> "AgriAMP — de tu viñedo a la solución biológica."</td></tr>
-  </table>
-</div>
-
-<p style="text-align:center; color:#333; font-size:11px; margin-top:14px;">
-  AgriAMP Demo Script — Aleph Hackathon M26 Biotech Track — 21 mar 2026
+<p style="text-align:center; color:#333; font-size:11px; margin-top:20px;">
+  AgriAMP Demo + Pitch Script — Aleph Hackathon M26 Biotech Track — 21 mar 2026
 </p>
 
 </body>
