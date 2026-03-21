@@ -14,6 +14,17 @@ import time
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+# Detect cloud mode (no GPU / no torch available)
+def _check_gpu():
+    try:
+        import torch
+        return torch.cuda.is_available()
+    except ImportError:
+        return False
+
+IS_CLOUD = not _check_gpu()
+PRECOMPUTED_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "precomputed")
+
 # ── Page Config ──
 st.set_page_config(
     page_title="AgriAMP — Biopesticide Discovery",
@@ -112,19 +123,24 @@ def render_sidebar():
 
         st.divider()
 
-        run_button = st.button(
-            "Ejecutar Pipeline AgriAMP",
-            type="primary",
-            use_container_width=True,
+        precomputed_path = os.path.join(
+            PRECOMPUTED_DIR, f"{pathogen.replace(' ', '_').lower()}.json"
         )
 
-        # Check for precomputed results
-        precomputed_path = os.path.join(
-            os.path.dirname(__file__), "data", "precomputed", f"{pathogen.replace(' ', '_').lower()}.json"
-        )
-        load_precomputed = False
-        if os.path.exists(precomputed_path):
-            load_precomputed = st.checkbox("Cargar resultados pre-computados", value=False)
+        if IS_CLOUD:
+            # Cloud mode: auto-load precomputed, no pipeline button
+            run_button = False
+            load_precomputed = os.path.exists(precomputed_path)
+            st.info("Modo cloud — resultados pre-computados. Para pipeline en vivo, correr localmente con GPU.")
+        else:
+            run_button = st.button(
+                "Ejecutar Pipeline AgriAMP",
+                type="primary",
+                use_container_width=True,
+            )
+            load_precomputed = False
+            if os.path.exists(precomputed_path):
+                load_precomputed = st.checkbox("Cargar resultados pre-computados", value=False)
 
         st.divider()
         st.markdown("""
@@ -133,6 +149,8 @@ def render_sidebar():
         de peptidos antimicrobianos contra patogenos de cultivos.
 
         Desarrollado para Aleph Hackathon M26 — Track Biotech
+
+        [GitHub](https://github.com/waitdeadai/agriamp)
         """)
 
         return pathogen, run_button, load_precomputed, precomputed_path, max_variants, tox_threshold

@@ -1,14 +1,8 @@
 streamlit>=1.30.0
-transformers>=4.36.0
-torch
 numpy
 pandas
 scikit-learn
-biopython
-modlamp
 plotly
 matplotlib
 seaborn
 openpyxl
-xlrd
-joblib
