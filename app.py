@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import json
 import os
 import sys
-import time
+
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -208,15 +208,6 @@ def render_sidebar():
         return pathogen, run_button, load_precomputed, precomputed_path, max_variants, tox_threshold
 
 
-def render_agent_log(steps):
-    """Render the agentic workflow log."""
-    for step in steps:
-        icon = {"success": "✅", "warning": "⚠️", "error": "❌", "running": "⏳"}.get(step.status, "⏳")
-        with st.expander(f"{step.icon} {step.tool_name} {icon}", expanded=(step.status != "success")):
-            st.markdown(step.message)
-            if step.duration > 0:
-                st.caption(f"Duracion: {step.duration:.1f}s")
-
 
 def render_top_candidates(df: pd.DataFrame):
     """Tab 1: Top candidates dashboard."""
@@ -307,7 +298,7 @@ def render_property_analysis(df: pd.DataFrame, metrics: dict):
 
         top = df.iloc[0]
         candidate = {
-            "Carga": min(max(top["net_charge"] / 8, 0), 1),
+            "Carga": min(max(top["net_charge"] / 6, 0), 1),
             "Anfipacidad": min(max(top["hydrophobic_moment"] / 0.8, 0), 1),
             "Estabilidad": max(1 - top["instability_index"] / 100, 0),
             "Selectividad": top.get("selectivity_score", 0.5),

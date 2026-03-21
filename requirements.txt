@@ -6,3 +6,7 @@ plotly
 matplotlib
 seaborn
 openpyxl
+# Local pipeline execution (not needed for Streamlit Cloud)
+torch>=2.0.0
+transformers>=4.30.0
+modlamp
