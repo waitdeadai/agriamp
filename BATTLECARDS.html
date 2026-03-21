@@ -102,13 +102,13 @@
   <div class="row">
     <div>
       <div class="stat">500-600M</div>
-      <div class="stat-label">litros/kg agroquimicos/ano Argentina</div>
+      <div class="stat-label">litros/kg agroquímicos/año Argentina</div>
       <div class="small">Fuente: SPRINT-H2020, Mongabay 2020</div>
     </div>
     <div>
       <div class="stat">10-50%</div>
-      <div class="stat-label">perdida por Botrytis en uvas</div>
-      <div class="small">Springer, PMC. $2B perdidas globales/ano</div>
+      <div class="stat-label">pérdida por Botrytis en uvas</div>
+      <div class="small">Springer, PMC. $2B pérdidas globales/año</div>
     </div>
     <div>
       <div class="stat">$17-18B</div>
@@ -120,7 +120,7 @@
   <div class="row">
     <div>
       <div class="stat">650M</div>
-      <div class="stat-label">parametros ESM-2</div>
+      <div class="stat-label">parámetros ESM-2</div>
       <div class="small">65M secuencias UniRef50 (NO 250M, eso era ESM-1)</div>
     </div>
     <div>
@@ -130,7 +130,7 @@
     </div>
     <div>
       <div class="stat">$80-250</div>
-      <div class="stat-label">sintesis peptido screening</div>
+      <div class="stat-label">síntesis péptido screening</div>
       <div class="small">$200-500+ alta pureza (>95% HPLC)</div>
     </div>
   </div>
@@ -138,12 +138,12 @@
 
 <!-- CARD 3: TECH STACK -->
 <div class="card card-purple">
-  <h2>Stack Tecnico</h2>
+  <h2>Stack Técnico</h2>
   <ul>
     <li><b>ESM-2</b> (Meta, facebook/esm2_t33_650M_UR50D) — protein language model, 1280-dim embeddings, GPU CUDA</li>
-    <li><b>Random Forest</b> (scikit-learn) — 200 arboles, features: PCA embeddings + 12 propiedades + AA composition</li>
-    <li><b>Propiedades bioquimicas</b> — carga neta pH 7, momento hidrofobico (Eisenberg), GRAVY (Kyte-Doolittle), pI, MW, instabilidad, Boman, aromaticidad, indice alifatico</li>
-    <li><b>Generador variantes</b> — sustitucion puntual (K/R/L/W), optimizacion carga, truncamiento N/C-terminal, controles scrambled</li>
+    <li><b>Random Forest</b> (scikit-learn) — 200 árboles, features: PCA embeddings + 12 propiedades + AA composition</li>
+    <li><b>Propiedades bioquímicas</b> — carga neta pH 7, momento hidrofóbico (Eisenberg), GRAVY (Kyte-Doolittle), pI, MW, instabilidad, Boman, aromaticidad, índice alifático</li>
+    <li><b>Generador variantes</b> — sustitución puntual (K/R/L/W), optimización carga, truncamiento N/C-terminal, controles scrambled</li>
     <li><b>Toxicidad</b> — rule-based: GRAVY>0.5, carga>+8, largo>50, Cys>12%, motivo WxxW</li>
     <li><b>UI</b> — Streamlit + Plotly + matplotlib</li>
     <li><b>Score compuesto</b> — 0.35×AMP_prob + 0.25×carga + 0.20×anfipacidad + 0.10×estabilidad + 0.10×(1-toxicidad)</li>
@@ -152,46 +152,46 @@
 
 <!-- CARD 4: BIOLOGIA CHEAT SHEET -->
 <div class="card card-yellow">
-  <h2>Biologia — Cheat Sheet</h2>
-  <p><b>AMPs:</b> Peptidos cortos (12-50 aa) del sistema inmune innato. Matan microbios rompiendo membranas. 3+ mil millones de anos de evolucion.</p>
+  <h2>Biología — Cheat Sheet</h2>
+  <p><b>AMPs:</b> Péptidos cortos (12-50 aa) del sistema inmune innato. Matan microbios rompiendo membranas. 3+ mil millones de años de evolución.</p>
   <hr class="divider">
   <p><b>Mecanismo (3 pasos):</b></p>
   <ol style="padding-left:18px;">
-    <li><b>Atraccion electrostatica</b> — AMPs cationicos (+) → membrana microbiana anionica (-)</li>
-    <li><b>Insercion</b> — cara hidrofobica penetra bicapa lipidica</li>
-    <li><b>Disrupcion</b> — poros o "alfombra" → celula muere</li>
+    <li><b>Atracción electrostática</b> — AMPs catiónicos (+) → membrana microbiana aniónica (-)</li>
+    <li><b>Inserción</b> — cara hidrofóbica penetra bicapa lipídica</li>
+    <li><b>Disrupción</b> — poros o "alfombra" → célula muere</li>
   </ol>
   <hr class="divider">
-  <p><b>Frase killer:</b> "A diferencia de pesticidas quimicos que atacan UNA via metabolica y generan resistencia, los AMPs atacan la estructura fundamental de la membrana. Es forzar una cerradura vs tirar la puerta abajo."</p>
+  <p><b>Frase killer:</b> "A diferencia de pesticidas químicos que atacan UNA vía metabólica y generan resistencia, los AMPs atacan la estructura fundamental de la membrana. Es forzar una cerradura vs tirar la puerta abajo."</p>
   <hr class="divider">
-  <p><b>AMP ideal:</b> Carga +2 a +9 | Anfipático (alto momento hidrofobico) | Alfa-helicoidal | Selectivo (mata patogeno, no planta)</p>
-  <p><b>Botrytis cinerea</b> = <span class="warn">HONGO</span> (no bacteria). Decir "antifungico", no "antibacteriano"</p>
+  <p><b>AMP ideal:</b> Carga +2 a +9 | Anfipático (alto momento hidrofóbico) | Alfa-helicoidal | Selectivo (mata patógeno, no planta)</p>
+  <p><b>Botrytis cinerea</b> = <span class="warn">HONGO</span> (no bacteria). Decir "antifúngico", no "antibacteriano"</p>
 </div>
 
 <!-- CARD 5: RESPUESTAS A JURADOS -->
 <div class="card card-red">
   <h2>Respuestas a Jurados</h2>
 
-  <p><b>"Por que no usar ProteoGPT?"</b></p>
-  <div class="answer">ProteoGPT (Wang et al., Nature Microbiology 2025) es para microbiologos investigadores — requiere expertise en bioinformatica. AgriAMP es para agronomos. Nuestro diferenciador es la accesibilidad y el enfoque especifico en patogenos agricolas.</div>
+  <p><b>"¿Por qué no usar ProteoGPT?"</b></p>
+  <div class="answer">ProteoGPT (Wang et al., Nature Microbiology 2025) es para microbiólogos investigadores — requiere expertise en bioinformática. AgriAMP es para agrónomos. Nuestro diferenciador es la accesibilidad y el enfoque específico en patógenos agrícolas.</div>
 
-  <p style="margin-top:10px;"><b>"Como validan los peptidos?"</b></p>
-  <div class="answer">El siguiente paso es sintesis quimica ($80-250/peptido screening) y ensayos de inhibicion in vitro contra Botrytis cinerea. El pipeline prioriza candidatos con propiedades que la literatura asocia a alta actividad y baja toxicidad. Es un pipeline hit-to-lead in silico.</div>
+  <p style="margin-top:10px;"><b>"¿Cómo validan los péptidos?"</b></p>
+  <div class="answer">El siguiente paso es síntesis química ($80-250/péptido screening) y ensayos de inhibición in vitro contra Botrytis cinerea. El pipeline prioriza candidatos con propiedades que la literatura asocia a alta actividad y baja toxicidad. Es un pipeline hit-to-lead in silico.</div>
 
-  <p style="margin-top:10px;"><b>"El clasificador no es solo un Random Forest basico?"</b></p>
-  <div class="answer">El poder predictivo viene de los embeddings de ESM-2 — representaciones de 1280 dimensiones aprendidas de 65 millones de secuencias proteicas. El RF actua sobre features que capturan estructura y evolucion, no solo composicion de aminoacidos. AUC 0.977 lo valida.</div>
+  <p style="margin-top:10px;"><b>"¿El clasificador no es solo un Random Forest básico?"</b></p>
+  <div class="answer">El poder predictivo viene de los embeddings de ESM-2 — representaciones de 1280 dimensiones aprendidas de 65 millones de secuencias proteicas. El RF actúa sobre features que capturan estructura y evolución, no solo composición de aminoácidos. AUC 0.977 lo valida.</div>
 
-  <p style="margin-top:10px;"><b>"Por que no usaron ESM-3 / ESM Cambrian?"</b></p>
-  <div class="answer">ESM Cambrian (EvolutionaryScale, 300M/600M) es la siguiente iteracion. Lo evaluamos pero ESM-2 tiene mayor base instalada, documentacion, y compatibilidad con HuggingFace transformers. ESM Cambrian es el upgrade natural para la v2.</div>
+  <p style="margin-top:10px;"><b>"¿Por qué no usaron ESM-3 / ESM Cambrian?"</b></p>
+  <div class="answer">ESM Cambrian (EvolutionaryScale, 300M/600M) es la siguiente iteración. Lo evaluamos pero ESM-2 tiene mayor base instalada, documentación, y compatibilidad con HuggingFace transformers. ESM Cambrian es el upgrade natural para la v2.</div>
 
-  <p style="margin-top:10px;"><b>"Como manejan la selectividad? Que no mate celulas vegetales?"</b></p>
-  <div class="answer">La selectividad viene de la diferencia en composicion de membrana: las membranas microbianas tienen mas fosfolipidos anionicos que las celulas vegetales. Nuestro scoring prioriza carga moderada (+3 a +6) y anfipacidad alta, que maximizan selectividad patogeno/host. Ademas, el screening de toxicidad filtra candidatos con GRAVY alto o carga excesiva.</div>
+  <p style="margin-top:10px;"><b>"¿Cómo manejan la selectividad? ¿Que no mate células vegetales?"</b></p>
+  <div class="answer">La selectividad viene de la diferencia en composición de membrana: las membranas microbianas tienen más fosfolípidos aniónicos que las células vegetales. Nuestro scoring prioriza carga moderada (+3 a +6) y anfipacidad alta, que maximizan selectividad patógeno/host. Además, el screening de toxicidad filtra candidatos con GRAVY alto o carga excesiva.</div>
 
-  <p style="margin-top:10px;"><b>"Hay validacion experimental?"</b></p>
-  <div class="answer">Este es un pipeline in silico — el output son candidatos para validacion experimental, no moleculas validadas. ProteoGPT (Wang et al., Nature Microbiology 2025) demostro que este approach funciona: el 90% (18/20) de sus peptidos top generados por IA mostraron actividad inhibitoria in vitro. Nuestro pipeline sigue el mismo paradigma aplicado a agricultura.</div>
+  <p style="margin-top:10px;"><b>"¿Hay validación experimental?"</b></p>
+  <div class="answer">Este es un pipeline in silico — el output son candidatos para validación experimental, no moléculas validadas. ProteoGPT (Wang et al., Nature Microbiology 2025) demostró que este approach funciona: el 90% (18/20) de sus péptidos top generados por IA mostraron actividad inhibitoria in vitro. Nuestro pipeline sigue el mismo paradigma aplicado a agricultura.</div>
 
-  <p style="margin-top:10px;"><b>"Modelo de negocio?"</b></p>
-  <div class="answer">SaaS para empresas AgTech e institutos de investigacion. El mercado de biopesticidas crece a $17-18B para 2030 (MarketsandMarkets, CAGR 14.6%). IBI Ag levanto $10M Serie A (Corteva) para bioinsecticidas basados en proteinas — valida el dominio. Tambien: licencias a quimicas agricolas para screening de candidatos.</div>
+  <p style="margin-top:10px;"><b>"¿Modelo de negocio?"</b></p>
+  <div class="answer">SaaS para empresas AgTech e institutos de investigación. El mercado de biopesticidas crece a $17-18B para 2030 (MarketsandMarkets, CAGR 14.6%). IBI Ag levantó $10M Serie A (Corteva) para bioinsecticidas basados en proteínas — valida el dominio. También: licencias a químicas agrícolas para screening de candidatos.</div>
 </div>
 
 <!-- CARD 6: NO DECIR -->
@@ -199,12 +199,12 @@
   <h2>NO DECIR</h2>
   <ul>
     <li><span class="danger">NO:</span> "250 millones de secuencias" → <span class="highlight">SI:</span> "65 millones de secuencias" (250M era ESM-1)</li>
-    <li><span class="danger">NO:</span> "Mata todas las bacterias" → <span class="highlight">SI:</span> "Actividad selectiva contra patogenos especificos"</li>
-    <li><span class="danger">NO:</span> "Disenamos un antibiotico" → <span class="highlight">SI:</span> "Candidatos in silico para validacion experimental"</li>
-    <li><span class="danger">NO:</span> "IBI Ag usa IA para bioinsecticidas" → <span class="highlight">SI:</span> "IBI Ag levanto $10M para bioinsecticidas basados en anticuerpos, y anuncio una plataforma de diseno de proteinas con IA"</li>
-    <li><span class="danger">NO:</span> Confundir antibacteriano/antifungico — <span class="warn">Botrytis es HONGO</span></li>
-    <li><span class="danger">NO:</span> ML como caja negra → <span class="highlight">SI:</span> Mostrar feature importances</li>
-    <li><span class="danger">NO:</span> "La sintesis cuesta $200-500" → <span class="highlight">SI:</span> "$80-250 para screening, $200-500+ alta pureza"</li>
+    <li><span class="danger">NO:</span> "Mata todas las bacterias" → <span class="highlight">SÍ:</span> "Actividad selectiva contra patógenos específicos"</li>
+    <li><span class="danger">NO:</span> "Diseñamos un antibiótico" → <span class="highlight">SÍ:</span> "Candidatos in silico para validación experimental"</li>
+    <li><span class="danger">NO:</span> "IBI Ag usa IA para bioinsecticidas" → <span class="highlight">SÍ:</span> "IBI Ag levantó $10M para bioinsecticidas basados en anticuerpos, y anunció una plataforma de diseño de proteínas con IA"</li>
+    <li><span class="danger">NO:</span> Confundir antibacteriano/antifúngico — <span class="warn">Botrytis es HONGO</span></li>
+    <li><span class="danger">NO:</span> ML como caja negra → <span class="highlight">SÍ:</span> Mostrar feature importances</li>
+    <li><span class="danger">NO:</span> "La síntesis cuesta $200-500" → <span class="highlight">SÍ:</span> "$80-250 para screening, $200-500+ alta pureza"</li>
   </ul>
 </div>
 
@@ -215,17 +215,17 @@
     <div>
       <ul>
         <li><b>In silico</b> = computacional</li>
-        <li><b>MIC</b> = Concentracion Inhibitoria Minima</li>
+        <li><b>MIC</b> = Concentración Inhibitoria Mínima</li>
         <li><b>Hit-to-lead</b> = descubrimiento → candidato</li>
-        <li><b>Anfipacidad</b> = cara hidrofobica + cara hidrofilica</li>
+        <li><b>Anfipacidad</b> = cara hidrofóbica + cara hidrofílica</li>
       </ul>
     </div>
     <div>
       <ul>
         <li><b>Protein language model</b> = DL en millones de secuencias</li>
-        <li><b>Selectivity index</b> = toxicidad host / actividad patogeno</li>
+        <li><b>Selectivity index</b> = toxicidad host / actividad patógeno</li>
         <li><b>GRAVY</b> = Grand Average of Hydropathicity</li>
-        <li><b>Boman index</b> = potencial union a proteinas</li>
+        <li><b>Boman index</b> = potencial unión a proteínas</li>
       </ul>
     </div>
   </div>

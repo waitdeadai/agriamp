@@ -91,28 +91,28 @@ PATHOGEN_INFO = {
         "common": "Podredumbre gris",
         "crops": "Uvas, frutillas, tomates",
         "region": "Mendoza, Patagonia",
-        "impact": "Hasta 30% de perdida en temporadas humedas",
+        "impact": "Hasta 30% de pérdida en temporadas húmedas",
         "type": "Hongo",
     },
     "Fusarium graminearum": {
         "common": "Fusariosis de la espiga",
-        "crops": "Trigo, cebada, maiz",
-        "region": "Pampa humeda, NOA",
-        "impact": "Micotoxinas en granos, rechazo de exportacion",
+        "crops": "Trigo, cebada, maíz",
+        "region": "Pampa húmeda, NOA",
+        "impact": "Micotoxinas en granos, rechazo de exportación",
         "type": "Hongo",
     },
     "Xanthomonas citri": {
-        "common": "Cancrosis de los citricos",
+        "common": "Cancrosis de los cítricos",
         "crops": "Naranjas, limones, pomelos",
-        "region": "Tucuman, NEA, NOA",
-        "impact": "Barrera fitosanitaria para exportacion",
+        "region": "Tucumán, NEA, NOA",
+        "impact": "Barrera fitosanitaria para exportación",
         "type": "Bacteria Gram-negativa",
     },
     "Ralstonia solanacearum": {
         "common": "Marchitez bacteriana",
         "crops": "Tomate, papa, pimiento",
-        "region": "Cinturon horticola",
-        "impact": "Hasta 100% de perdida sin control",
+        "region": "Cinturón hortícola",
+        "impact": "Hasta 100% de pérdida sin control",
         "type": "Bacteria Gram-negativa",
     },
 }
@@ -121,10 +121,10 @@ PATHOGEN_INFO = {
 def render_sidebar():
     """Render sidebar with controls."""
     with st.sidebar:
-        st.markdown("### Configuracion del Analisis")
+        st.markdown("### Configuración del Análisis")
 
         pathogen = st.selectbox(
-            "Patogeno objetivo",
+            "Patógeno objetivo",
             list(PATHOGEN_INFO.keys()),
             format_func=lambda x: f"{x} ({PATHOGEN_INFO[x]['common']})",
         )
@@ -133,14 +133,14 @@ def render_sidebar():
         st.markdown(f"""
         **Tipo:** {info['type']}
         **Cultivos:** {info['crops']}
-        **Region:** {info['region']}
+        **Región:** {info['region']}
         **Impacto:** {info['impact']}
         """)
 
         st.divider()
 
         if not IS_CLOUD:
-            with st.expander("Parametros avanzados", expanded=False):
+            with st.expander("Parámetros avanzados", expanded=False):
                 max_variants = st.slider("Max variantes por semilla", 50, 300, 150, 25)
                 tox_threshold = st.slider("Umbral toxicidad", 0.1, 0.8, 0.4, 0.05)
         else:
@@ -169,30 +169,30 @@ def render_sidebar():
                 load_precomputed = st.checkbox("Cargar resultados pre-computados", value=False)
 
         st.divider()
-        with st.expander("Que son los peptidos antimicrobianos (AMPs)?", expanded=False):
+        with st.expander("¿Qué son los péptidos antimicrobianos (AMPs)?", expanded=False):
             st.markdown("""
-            Los **AMPs** son cadenas cortas de aminoacidos (10-50) presentes
+            Los **AMPs** son cadenas cortas de aminoácidos (10-50) presentes
             en el **sistema inmune innato** de todos los organismos vivos.
-            Llevan **3+ mil millones de anos** de evolucion combatiendo patogenos.
+            Llevan **3+ mil millones de años** de evolución combatiendo patógenos.
 
             **Mecanismo en 3 pasos:**
-            1. **Atraccion electrostatica** — AMPs cationicos (+) se unen a la membrana microbiana anionica (-)
-            2. **Insercion** — la cara hidrofobica penetra la bicapa lipidica
-            3. **Disrupcion** — forman poros que destruyen la membrana
+            1. **Atracción electrostática** — AMPs catiónicos (+) se unen a la membrana microbiana aniónica (-)
+            2. **Inserción** — la cara hidrofóbica penetra la bicapa lipídica
+            3. **Disrupción** — forman poros que destruyen la membrana
 
-            **Ventaja vs pesticidas quimicos:** los pesticidas atacan UNA via
-            metabolica y generan resistencia. Los AMPs atacan la **estructura
+            **Ventaja vs pesticidas químicos:** los pesticidas atacan UNA vía
+            metabólica y generan resistencia. Los AMPs atacan la **estructura
             fundamental de la membrana** — es la diferencia entre forzar una
             cerradura y tirar la puerta abajo.
             """)
-        with st.expander("Como funciona AgriAMP", expanded=False):
+        with st.expander("Cómo funciona AgriAMP", expanded=False):
             st.markdown("""
-            **6 herramientas bioinformaticas** ejecutadas como workflow agentico:
+            **6 herramientas bioinformáticas** ejecutadas como workflow agéntico:
 
-            1. **Consulta DB** — 4,600+ AMPs de modlAMP + 27 curados antifungicos
+            1. **Consulta DB** — 4,600+ AMPs de modlAMP + 27 curados antifúngicos
             2. **Generador** — variantes optimizadas (K/R/L/W, carga, truncamiento)
             3. **ESM-2 Embeddings** — protein language model, 650M params, 1280-dim
-            4. **Propiedades** — 12 descriptores bioquimicos (carga, GRAVY, pI, MW...)
+            4. **Propiedades** — 12 descriptores bioquímicos (carga, GRAVY, pI, MW...)
             5. **Clasificador ML** — Random Forest, AUC 0.977, 5-fold CV estratificado
             6. **Toxicidad** — screening rule-based (GRAVY, carga, largo, Cys, WxxW)
 
@@ -246,7 +246,7 @@ def render_top_candidates(df: pd.DataFrame):
         y="agriamp_score",
         color="toxicity_risk",
         color_continuous_scale="RdYlGn_r",
-        labels={"agriamp_score": "AgriAMP Score", "label": "Peptido", "toxicity_risk": "Riesgo Tox."},
+        labels={"agriamp_score": "AgriAMP Score", "label": "Péptido", "toxicity_risk": "Riesgo Tox."},
         title="Top 10 Candidatos por AgriAMP Score",
     )
     fig.add_hline(y=0.7, line_dash="dash", line_color="#4caf50", opacity=0.5,
@@ -363,7 +363,7 @@ def render_property_analysis(df: pd.DataFrame, metrics: dict):
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
-        fig = px.histogram(df, x="hydrophobic_moment", nbins=30, title="Momento Hidrofobico",
+        fig = px.histogram(df, x="hydrophobic_moment", nbins=30, title="Momento Hidrofóbico",
                            color_discrete_sequence=["#1a5e1a"])
         fig.add_vline(x=0.3, line_dash="dash", line_color="red", annotation_text="Umbral anfipacidad")
         fig.update_layout(height=300)
@@ -419,9 +419,9 @@ def render_sequence_viewer(df: pd.DataFrame):
 
     st.markdown("""
     <div style="margin-top:10px;font-size:12px;">
-    <span style="background-color:#FFCA28;padding:2px 6px;border-radius:3px;">Hidrofobico</span>
-    <span style="background-color:#42A5F5;padding:2px 6px;border-radius:3px;color:white;">Cationico (+)</span>
-    <span style="background-color:#E57373;padding:2px 6px;border-radius:3px;">Anionico (-)</span>
+    <span style="background-color:#FFCA28;padding:2px 6px;border-radius:3px;">Hidrofóbico</span>
+    <span style="background-color:#42A5F5;padding:2px 6px;border-radius:3px;color:white;">Catiónico (+)</span>
+    <span style="background-color:#E57373;padding:2px 6px;border-radius:3px;">Aniónico (-)</span>
     <span style="background-color:#66BB6A;padding:2px 6px;border-radius:3px;">Polar</span>
     </div>
     """, unsafe_allow_html=True)
@@ -433,17 +433,17 @@ def render_sequence_viewer(df: pd.DataFrame):
         st.metric("Carga neta", f"+{pep['net_charge']:.1f}")
         st.metric("Peso molecular", f"{pep['molecular_weight']:.0f} Da")
     with col2:
-        st.metric("Momento hidrofobico", f"{pep['hydrophobic_moment']:.3f}")
+        st.metric("Momento hidrofóbico", f"{pep['hydrophobic_moment']:.3f}")
         st.metric("GRAVY", f"{pep['gravy']:.3f}")
     with col3:
-        st.metric("Punto isoelectrico", f"{pep['isoelectric_point']:.1f}")
-        st.metric("Indice Boman", f"{pep['boman_index']:.2f}")
+        st.metric("Punto isoeléctrico", f"{pep['isoelectric_point']:.1f}")
+        st.metric("Índice Boman", f"{pep['boman_index']:.2f}")
     with col4:
         st.metric("Toxicidad", f"{pep['toxicity_risk']:.2f}")
         st.metric("AgriAMP Score", f"{pep['agriamp_score']:.4f}")
 
     # Score breakdown
-    st.markdown("### Composicion del AgriAMP Score")
+    st.markdown("### Composición del AgriAMP Score")
     _charge_norm = min(max(pep["net_charge"] / 6, 0), 1)
     _hm_norm = min(max(pep["hydrophobic_moment"] / 0.8, 0), 1)
     _stab_norm = max(1 - pep["instability_index"] / 100, 0)
@@ -455,16 +455,16 @@ def render_sequence_viewer(df: pd.DataFrame):
         "Estabilidad (10%)": _stab_norm * 0.10,
         "Baja toxicidad (10%)": _tox_comp * 0.10,
     }
-    _comp_df = pd.DataFrame({"Componente": list(_components.keys()), "Contribucion": list(_components.values())})
-    _fig_comp = px.bar(_comp_df, x="Contribucion", y="Componente", orientation="h",
-                       color="Contribucion", color_continuous_scale="Greens",
+    _comp_df = pd.DataFrame({"Componente": list(_components.keys()), "Contribución": list(_components.values())})
+    _fig_comp = px.bar(_comp_df, x="Contribución", y="Componente", orientation="h",
+                       color="Contribución", color_continuous_scale="Greens",
                        title=f"Score total: {pep['agriamp_score']:.4f}")
     _fig_comp.update_layout(height=250, showlegend=False, yaxis=dict(autorange="reversed"))
     st.plotly_chart(_fig_comp, use_container_width=True)
 
     # Helical wheel projection
-    st.markdown("### Proyeccion Helical Wheel")
-    st.caption("Muestra la distribucion anfipática — residuos hidrofobicos (amarillo) vs cationicos (azul) en una helice alfa")
+    st.markdown("### Proyección Helical Wheel")
+    st.caption("Muestra la distribución anfipática — residuos hidrofóbicos (amarillo) vs catiónicos (azul) en una hélice alfa")
 
     fig, ax = plt.subplots(1, 1, figsize=(6, 6))
     angle_step = 100  # degrees for alpha helix
@@ -508,17 +508,17 @@ def render_sequence_viewer(df: pd.DataFrame):
 def render_validation(metrics: dict):
     """Tab 4: ML validation metrics."""
     if not metrics:
-        st.warning("No hay metricas de validacion.")
+        st.warning("No hay métricas de validación.")
         return
 
     cv_auc = metrics.get("cv_auc_mean")
 
     if cv_auc is None:
-        st.info("Se uso scoring basado en propiedades (no ML). Metricas de validacion cruzada no disponibles.")
+        st.info("Se usó scoring basado en propiedades (no ML). Métricas de validación cruzada no disponibles.")
         return
 
     # Comprehensive metrics row
-    st.subheader("Metricas del Clasificador (Out-of-Fold)")
+    st.subheader("Métricas del Clasificador (Out-of-Fold)")
     col_m1, col_m2, col_m3, col_m4, col_m5, col_m6 = st.columns(6)
     with col_m1:
         st.metric("AUC-ROC", f"{cv_auc:.3f}")
@@ -556,9 +556,9 @@ def render_validation(metrics: dict):
                 showscale=False,
             ))
             fig_cm.update_layout(
-                title="Matriz de Confusion (Out-of-Fold)",
+                title="Matriz de Confusión (Out-of-Fold)",
                 height=350,
-                xaxis_title="Prediccion",
+                xaxis_title="Predicción",
                 yaxis_title="Real",
                 yaxis=dict(autorange="reversed"),
             )
@@ -626,9 +626,9 @@ def render_caso_real(df: pd.DataFrame, pathogen: str):
     <div class="hero-box">
         <h3>Caso Real: Botrytis cinerea en Mendoza</h3>
         <p style="font-size:1.05rem;">
-            La podredumbre gris (<i>Botrytis cinerea</i>) es el hongo mas agresivo y
-            prevalente en los vinedos de Mendoza. La literatura reporta perdidas de
-            hasta <b>50-80% de la cosecha</b> en anos de infeccion severa, con impacto
+            La podredumbre gris (<i>Botrytis cinerea</i>) es el hongo más agresivo y
+            prevalente en los viñedos de Mendoza. La literatura reporta pérdidas de
+            hasta <b>50-80% de la cosecha</b> en años de infección severa, con impacto
             significativo en rendimiento y calidad del fruto (PMC, Springer).
         </p>
     </div>
@@ -636,11 +636,11 @@ def render_caso_real(df: pd.DataFrame, pathogen: str):
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric("Perdida por Botrytis", "50-80%", delta=None, help="Rango en anos severos (PMC, Springer)")
-        st.metric("Exportaciones vino ARG", "~$800M/ano", help="Mendoza = 75% produccion nacional")
+        st.metric("Pérdida por Botrytis", "50-80%", delta=None, help="Rango en años severos (PMC, Springer)")
+        st.metric("Exportaciones vino ARG", "~$800M/año", help="Mendoza = 75% producción nacional")
     with col2:
-        st.metric("Perdidas globales/ano", "~$2B USD", delta=None, help="Impacto economico global de B. cinerea")
-        st.metric("Agroquimicos ARG/ano", "500M+ litros/kg", help="SPRINT-H2020, Mongabay 2020")
+        st.metric("Pérdidas globales/año", "~$2B USD", delta=None, help="Impacto económico global de B. cinerea")
+        st.metric("Agroquímicos ARG/año", "500M+ litros/kg", help="SPRINT-H2020, Mongabay 2020")
     with col3:
         st.metric("Perdida en peso", "53%", delta=None, help="Peso de cosecha perdido")
         st.metric("Pesticidas ARG banned en UE", "106", help="Acuerdo EU-Mercosur, enero 2026")
@@ -649,26 +649,26 @@ def render_caso_real(df: pd.DataFrame, pathogen: str):
 
     st.markdown("#### Crisis Regulatoria")
     st.markdown("""
-    - **Nuevos limites MRL de importacion UE** (marzo 2026): residuos de clothianidin y thiamethoxam prohibidos en productos importados (ban de uso outdoor desde 2018)
-    - **Acuerdo EU-Mercosur**: Argentina tiene **106 principios activos prohibidos** en la UE — barrera para exportacion de vinos
+    - **Nuevos límites MRL de importación UE** (marzo 2026): residuos de clothianidin y thiamethoxam prohibidos en productos importados (ban de uso outdoor desde 2018)
+    - **Acuerdo EU-Mercosur**: Argentina tiene **106 principios activos prohibidos** en la UE — barrera para exportación de vinos
     - **Resistencia documentada**: mutaciones duales SDHI + QoI en poblaciones de *B. cinerea* a nivel global
-    - **Biopesticidas basados en peptidos aprobados para vid**: **ninguno** — oportunidad de mercado clara
+    - **Biopesticidas basados en péptidos aprobados para vid**: **ninguno** — oportunidad de mercado clara
     """)
 
     st.divider()
 
-    st.markdown("#### Validacion con AMPs Publicados")
+    st.markdown("#### Validación con AMPs Publicados")
     st.markdown("""
     | AMP | MIC vs *B. cinerea* | Fuente | Referencia |
     |-----|---------------------|--------|------------|
     | **Epinecidin-1** | 12.5 umol/L | *Epinephelus coioides* (mero) | Food Chemistry, 2022 |
-    | **EPI-4** (variante optimizada) | **6 umol/L** (2x mejor) | Sintetico | ACS JAFC, 2025 |
-    | **Rs-AFP2** | 3 umol/L | *Raphanus sativus* (rabano) | Plant defensin literature |
+    | **EPI-4** (variante optimizada) | **6 umol/L** (2x mejor) | Sintético | ACS JAFC, 2025 |
+    | **Rs-AFP2** | 3 umol/L | *Raphanus sativus* (rábano) | Plant defensin literature |
     | **NaD1** | 2 umol/L | *Nicotiana alata* (tabaco) | Plant defensin literature |
 
     EPI-4 es una variante optimizada de Epinecidin-1 con sustituciones en la superficie polar
     (Pan et al., JAFC 2025). Nuestro generador de variantes aplica estrategias similares:
-    sustitucion con residuos cationicos (+K/R) para aumentar carga y actividad antimicrobiana.
+    sustitución con residuos catiónicos (+K/R) para aumentar carga y actividad antimicrobiana.
     """)
 
     # Show Epinecidin in results if present
@@ -685,12 +685,12 @@ def render_caso_real(df: pd.DataFrame, pathogen: str):
                 )
 
     st.divider()
-    st.markdown("#### Proximo Paso: Validacion Experimental")
+    st.markdown("#### Próximo Paso: Validación Experimental")
     st.markdown("""
-    Los candidatos de AgriAMP son **candidatos in silico para validacion experimental**.
-    El siguiente paso es **sintesis quimica** ($80-250/peptido screening) y ensayos de
-    inhibicion in vitro contra *B. cinerea*. Socio natural: **INTA Mendoza** (Laboratorio
-    de Fitopatologia, equipo de Dra. Georgina Escoriaza).
+    Los candidatos de AgriAMP son **candidatos in silico para validación experimental**.
+    El siguiente paso es **síntesis química** ($80-250/péptido screening) y ensayos de
+    inhibición in vitro contra *B. cinerea*. Socio natural: **INTA Mendoza** (Laboratorio
+    de Fitopatología, equipo de Dra. Georgina Escoriaza).
     """)
 
 
@@ -698,8 +698,8 @@ def render_benchmark(metrics: dict):
     """Tab: Benchmark comparison vs published SOTA tools."""
     st.markdown("### AgriAMP vs Estado del Arte (2024-2026)")
     st.markdown("""
-    Comparacion de metricas contra herramientas publicadas de prediccion de AMPs.
-    Todas las metricas de AgriAMP son **out-of-fold** (validacion cruzada estratificada 5-fold,
+    Comparación de métricas contra herramientas publicadas de predicción de AMPs.
+    Todas las métricas de AgriAMP son **out-of-fold** (validación cruzada estratificada 5-fold,
     sin data leakage).
     """)
 
@@ -716,8 +716,8 @@ def render_benchmark(metrics: dict):
     benchmark_data = [
         {
             "Herramienta": "AgriAMP (nuestro)",
-            "Ano": "2026",
-            "Metodo": "ESM-2 + RF",
+            "Año": "2026",
+            "Método": "ESM-2 + RF",
             "Dataset": f"{n_train} seqs",
             "AUC": our_auc,
             "MCC": our_mcc,
@@ -727,8 +727,8 @@ def render_benchmark(metrics: dict):
         },
         {
             "Herramienta": "amPEPpy",
-            "Ano": "2020",
-            "Metodo": "RF + features",
+            "Año": "2020",
+            "Método": "RF + features",
             "Dataset": "Custom",
             "AUC": 0.99,
             "MCC": 0.90,
@@ -738,8 +738,8 @@ def render_benchmark(metrics: dict):
         },
         {
             "Herramienta": "PLAPD",
-            "Ano": "2025",
-            "Metodo": "ESM-2 + CNN + Transformer",
+            "Año": "2025",
+            "Método": "ESM-2 + CNN + Transformer",
             "Dataset": "8,268 seqs",
             "AUC": 0.922,
             "MCC": 0.749,
@@ -749,8 +749,8 @@ def render_benchmark(metrics: dict):
         },
         {
             "Herramienta": "AMP-RNNpro",
-            "Ano": "2024",
-            "Metodo": "RNN + prob. features",
+            "Año": "2024",
+            "Método": "RNN + prob. features",
             "Dataset": "Custom",
             "AUC": None,
             "MCC": None,
@@ -760,8 +760,8 @@ def render_benchmark(metrics: dict):
         },
         {
             "Herramienta": "sAMPpred-GAT",
-            "Ano": "2023",
-            "Metodo": "GAT + estructura",
+            "Año": "2023",
+            "Método": "GAT + estructura",
             "Dataset": "Multiple",
             "AUC": None,
             "MCC": None,
@@ -785,9 +785,9 @@ def render_benchmark(metrics: dict):
     st.dataframe(display_df, use_container_width=True, hide_index=True)
 
     st.caption("""
-    *Nota: Las metricas NO son directamente comparables entre herramientas (cada una usa datasets diferentes).
-    amPEPpy reporta AUC 0.99 en su propio dataset custom. AgriAMP usa el benchmark estandar modlAMP.
-    La comparacion muestra que nuestro pipeline es competitivo en el rango SOTA.*
+    *Nota: Las métricas NO son directamente comparables entre herramientas (cada una usa datasets diferentes).
+    amPEPpy reporta AUC 0.99 en su propio dataset custom. AgriAMP usa el benchmark estándar modlAMP.
+    La comparación muestra que nuestro pipeline es competitivo en el rango SOTA.*
     """)
 
     # AUC comparison bar chart
@@ -816,21 +816,21 @@ def render_benchmark(metrics: dict):
     st.markdown("#### Diferenciador de AgriAMP")
     st.markdown("""
     Las herramientas comparadas son **clasificadores**: reciben una secuencia y predicen
-    si es AMP. AgriAMP es un **pipeline agentico completo** que:
+    si es AMP. AgriAMP es un **pipeline agéntico completo** que:
 
-    1. Consulta bases de datos de AMPs conocidos para el patogeno especifico
+    1. Consulta bases de datos de AMPs conocidos para el patógeno específico
     2. Genera variantes optimizadas con mutaciones dirigidas
     3. Genera embeddings con ESM-2 (650M params)
-    4. Calcula 12 propiedades bioquimicas
+    4. Calcula 12 propiedades bioquímicas
     5. Clasifica con Random Forest (AUC competitivo)
     6. Filtra por toxicidad y selectividad
 
-    **Ninguna otra herramienta ofrece este workflow integrado y accesible para agronomos.**
+    **Ninguna otra herramienta ofrece este workflow integrado y accesible para agrónomos.**
     """)
 
     # Our full metrics summary
     st.divider()
-    st.markdown("#### Metricas Completas de AgriAMP")
+    st.markdown("#### Métricas Completas de AgriAMP")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric("AUC-ROC", f"{our_auc:.3f}")
@@ -887,7 +887,7 @@ def render_export(df: pd.DataFrame, pathogen: str):
         )
 
     st.divider()
-    st.subheader("Resumen del Analisis")
+    st.subheader("Resumen del Análisis")
     st.json({
         "pathogen": pathogen,
         "total_candidates": len(df),
@@ -955,7 +955,7 @@ def main():
         # Agent workflow display
         status_container = st.container()
         with status_container:
-            st.subheader("Workflow Agentico")
+            st.subheader("Workflow Agéntico")
             step_placeholder = st.empty()
             steps_display = []
 
@@ -967,7 +967,7 @@ def main():
                         with st.expander(f"{s.icon} {s.tool_name} {icon}", expanded=(s.status == "running")):
                             st.markdown(s.message)
                             if s.duration > 0:
-                                st.caption(f"Duracion: {s.duration:.1f}s")
+                                st.caption(f"Duración: {s.duration:.1f}s")
 
             with st.spinner("Ejecutando pipeline AgriAMP..."):
                 result = agent.run(pathogen=pathogen, callback=on_step)
@@ -999,7 +999,7 @@ def main():
                 except Exception:
                     pass  # Non-critical
             else:
-                st.error("El pipeline encontro errores. Revisa el log de arriba.")
+                st.error("El pipeline encontró errores. Revisá el log de arriba.")
 
     # Display results
     if st.session_state.agent_result is not None:
@@ -1010,7 +1010,7 @@ def main():
         # Show agent workflow log
         steps = data.get("steps", [])
         if steps:
-            with st.expander("Workflow Agentico — 6 pasos completados", expanded=False):
+            with st.expander("Workflow Agéntico — 6 pasos completados", expanded=False):
                 for step in steps:
                     if isinstance(step, (list, tuple)) and len(step) >= 4:
                         name, icon, status, msg = step[0], step[1], step[2], step[3]
@@ -1036,10 +1036,10 @@ def main():
         tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
             "🌍 Caso Real",
             "🏆 Top Candidatos",
-            "📊 Analisis de Propiedades",
+            "📊 Análisis de Propiedades",
             "🧬 Visor de Secuencias",
             "📈 Benchmark vs SOTA",
-            "✅ Validacion ML",
+            "✅ Validación ML",
             "📥 Exportar",
         ])
 
@@ -1062,18 +1062,18 @@ def main():
         # Welcome screen — hero
         st.markdown("""
         <div class="hero-box">
-            <h3>De tu cultivo a la solucion biologica</h3>
+            <h3>De tu cultivo a la solución biológica</h3>
             <p style="font-size:1.05rem;margin-bottom:16px;">
-                AgriAMP es un agente de bioinformatica que disena <b>peptidos antimicrobianos</b>
-                (biopesticidas naturales) contra patogenos de cultivos usando inteligencia artificial.
-                Describe tu problema — el agente ejecuta un pipeline completo de 6 pasos y
-                entrega candidatos peptidicos rankeados para sintesis.
+                AgriAMP es un agente de bioinformática que diseña <b>péptidos antimicrobianos</b>
+                (biopesticidas naturales) contra patógenos de cultivos usando inteligencia artificial.
+                Describí tu problema — el agente ejecuta un pipeline completo de 6 pasos y
+                entrega candidatos peptídicos rankeados para síntesis.
             </p>
             <div style="display:flex;gap:40px;flex-wrap:wrap;">
-                <div><div class="hero-stat">650M</div><div class="hero-label">parametros ESM-2</div></div>
+                <div><div class="hero-stat">650M</div><div class="hero-label">parámetros ESM-2</div></div>
                 <div><div class="hero-stat">0.977</div><div class="hero-label">AUC clasificador</div></div>
                 <div><div class="hero-stat">4,600+</div><div class="hero-label">secuencias entrenamiento</div></div>
-                <div><div class="hero-stat">6</div><div class="hero-label">tools bioinformaticos</div></div>
+                <div><div class="hero-stat">6</div><div class="hero-label">tools bioinformáticos</div></div>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -1082,23 +1082,23 @@ def main():
         with col1:
             st.markdown("""
             #### Problema
-            Argentina usa **500M+ litros/kg de agroquimicos/ano**. Los patogenos generan resistencia.
-            La UE endurece bans. Los agronomos no tienen acceso a bioinformatica.
+            Argentina usa **500M+ litros/kg de agroquímicos/año**. Los patógenos generan resistencia.
+            La UE endurece bans. Los agrónomos no tienen acceso a bioinformática.
             """)
         with col2:
             st.markdown("""
-            #### Solucion
-            **Peptidos antimicrobianos** (AMPs) — armas del sistema inmune innato con
-            3+ mil millones de anos de evolucion. Atacan la membrana, no una via metabolica.
+            #### Solución
+            **Péptidos antimicrobianos** (AMPs) — armas del sistema inmune innato con
+            3+ mil millones de años de evolución. Atacan la membrana, no una vía metabólica.
             """)
         with col3:
             st.markdown("""
-            #### Pipeline Agentico
+            #### Pipeline Agéntico
             **6 herramientas** orquestadas como workflow de IA:
             consulta DB → embeddings ESM-2 → propiedades → clasificador ML → generador → toxicidad.
             """)
 
-        st.info("Selecciona un patogeno en la barra lateral y presiona **Ejecutar Pipeline AgriAMP** para comenzar.")
+        st.info("Seleccioná un patógeno en la barra lateral y presioná **Ejecutar Pipeline AgriAMP** para comenzar.")
 
 
 if __name__ == "__main__":
