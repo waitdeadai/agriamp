@@ -10,3 +10,5 @@ openpyxl
 torch>=2.0.0
 transformers>=4.30.0
 modlamp
+# Testing
+pytest>=8.0.0
