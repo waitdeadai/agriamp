@@ -72,7 +72,7 @@ class AgriAMPAgent:
         # STEP 1: Query AMP databases
         # ═══════════════════════════════════════════════════════════
         notify(AgentStep("Database Query", "🔬", "running",
-                         "Consultando bases de datos de peptidos antimicrobianos..."))
+                         "Querying antimicrobial peptide databases..."))
         r1 = self.data_tool.run(pathogen=pathogen)
         self._update_step(result, r1, callback)
 
@@ -88,7 +88,7 @@ class AgriAMPAgent:
         # STEP 2: Generate variants from seed peptides
         # ═══════════════════════════════════════════════════════════
         notify(AgentStep("Variant Generator", "🧪", "running",
-                         f"Generando variantes optimizadas de {len(seed_sequences)} peptidos semilla..."))
+                         f"Generating optimized variants from {len(seed_sequences)} seed peptides..."))
         r2 = self.generator_tool.run(seed_sequences=seed_sequences, max_total=150)
         self._update_step(result, r2, callback)
 
@@ -116,8 +116,8 @@ class AgriAMPAgent:
             n_non_cached = n_cached - n_amp_cached
 
             notify(AgentStep("ESM-2 Embeddings", "🧬", "running",
-                             f"Cargando {n_cached} embeddings pre-computados ({n_amp_cached} AMPs + {n_non_cached} non-AMPs) "
-                             f"+ generando embeddings para {len(all_candidate_seqs)} candidatos con ESM-2 (650M params)..."))
+                             f"Loading {n_cached} pre-computed embeddings ({n_amp_cached} AMPs + {n_non_cached} non-AMPs) "
+                             f"+ generating embeddings for {len(all_candidate_seqs)} candidates with ESM-2 (650M params)..."))
 
             # Build cached lookup
             cached_seq_to_emb = {}
@@ -164,8 +164,8 @@ class AgriAMPAgent:
 
             total_to_embed = len(sampled_amps) + len(sampled_non) + len(all_candidate_seqs)
             notify(AgentStep("ESM-2 Embeddings", "🧬", "running",
-                             f"Generando embeddings con ESM-2 (650M params) para {total_to_embed} secuencias "
-                             f"({len(sampled_amps)} AMPs + {len(sampled_non)} non-AMPs + {len(all_candidate_seqs)} candidatos)..."))
+                             f"Generating embeddings with ESM-2 (650M params) for {total_to_embed} sequences "
+                             f"({len(sampled_amps)} AMPs + {len(sampled_non)} non-AMPs + {len(all_candidate_seqs)} candidates)..."))
 
             all_seqs = list(sampled_amps) + list(sampled_non) + list(all_candidate_seqs)
             r3 = self.embedding_tool.run(sequences=all_seqs)
@@ -203,7 +203,7 @@ class AgriAMPAgent:
         # ═══════════════════════════════════════════════════════════
         t4_start = time.time()
         notify(AgentStep("Biochemical Properties", "📊", "running",
-                         "Calculando 12 propiedades bioquimicas (carga, anfipacidad, GRAVY, MW, pI, Boman...)..."))
+                         "Computing 12 biochemical properties (charge, amphipathicity, GRAVY, MW, pI, Boman...)..."))
 
         amp_embs, amp_props, valid_amp = get_aligned(sampled_amps)
         non_embs, non_props, valid_non = get_aligned(sampled_non)
@@ -217,10 +217,10 @@ class AgriAMPAgent:
         t4_dur = time.time() - t4_start
         result.steps[-1].status = "success"
         result.steps[-1].message = (
-            f"Calculé 12 propiedades bioquimicas para {len(cand_props)} candidatos. "
-            f"AMPs efectivos tienen carga +2 a +9 y alto momento hidrofobico. "
-            f"De {len(cand_props)} candidatos: {n_ideal_charge} con carga ideal, "
-            f"{n_ideal_hm} con alta anfipacidad. Carga promedio: {avg_charge:+.1f}."
+            f"Computed 12 biochemical properties for {len(cand_props)} candidates. "
+            f"Effective AMPs have charge +2 to +9 and high hydrophobic moment. "
+            f"Of {len(cand_props)} candidates: {n_ideal_charge} with ideal charge, "
+            f"{n_ideal_hm} with high amphipathicity. Average charge: {avg_charge:+.1f}."
         )
         result.steps[-1].duration = t4_dur
         if callback:
@@ -230,7 +230,7 @@ class AgriAMPAgent:
         # STEP 5: AMP Classifier (Random Forest)
         # ═══════════════════════════════════════════════════════════
         notify(AgentStep("AMP Classifier", "🤖", "running",
-                         f"Entrenando clasificador ML ({len(amp_props)} AMPs + {len(non_props)} non-AMPs)..."))
+                         f"Training ML classifier ({len(amp_props)} AMPs + {len(non_props)} non-AMPs)..."))
 
         if len(amp_props) >= 10 and len(non_props) >= 10:
             r5 = self.classifier_tool.run(
@@ -255,8 +255,8 @@ class AgriAMPAgent:
                 amp_probs.append(0.5 * charge_s + 0.5 * hm_s)
             result.steps[-1].status = "warning"
             result.steps[-1].message = (
-                f"Datos insuficientes para ML. Usé scoring por propiedades "
-                f"(carga + momento hidrofobico) para {len(cand_props)} candidatos."
+                f"Insufficient data for ML. Used property-based scoring "
+                f"(charge + hydrophobic moment) for {len(cand_props)} candidates."
             )
             result.metrics = {"cv_auc_mean": None, "method": "property_scoring"}
             if callback:
@@ -266,7 +266,7 @@ class AgriAMPAgent:
         # STEP 6: Toxicity Screening
         # ═══════════════════════════════════════════════════════════
         notify(AgentStep("Toxicity Screening", "🛡️", "running",
-                         f"Evaluando riesgo de toxicidad para {len(cand_props)} candidatos..."))
+                         f"Evaluating toxicity risk for {len(cand_props)} candidates..."))
         cand_seqs = [p["sequence"] for p in cand_props]
         r6 = self.toxicity_tool.run(sequences=cand_seqs, properties_list=cand_props)
         self._update_step(result, r6, callback)

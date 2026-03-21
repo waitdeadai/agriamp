@@ -49,7 +49,7 @@ PATHOGEN_KEYWORDS = {
 
 class DataQueryTool(BaseTool):
     name = "Database Query"
-    description = "Consulta bases de datos de péptidos antimicrobianos"
+    description = "Queries antimicrobial peptide databases"
     icon = "🔬"
 
     def __init__(self):
@@ -115,10 +115,10 @@ class DataQueryTool(BaseTool):
         all_seed_seqs = curated_df["sequence"].tolist() if len(curated_df) > 0 else []
 
         msg = (
-            f"Consulté la base de datos de péptidos antimicrobianos. "
-            f"Fuente de entrenamiento: {training_source}. "
-            f"Encontré {pathogen_specific} AMPs con actividad relevante contra {pathogen}. "
-            f"Seleccioné los top {min(10, pathogen_specific)} como semillas para optimización."
+            f"Queried antimicrobial peptide database. "
+            f"Training source: {training_source}. "
+            f"Found {pathogen_specific} AMPs with relevant activity against {pathogen}. "
+            f"Selected top {min(10, pathogen_specific)} as seeds for optimization."
         )
 
         return ToolResult(

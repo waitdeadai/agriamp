@@ -112,7 +112,7 @@ class EmbeddingsTool(BaseTool):
             if not loaded:
                 return ToolResult(
                     status="error",
-                    message="No se pudo cargar ningún modelo ESM-2.",
+                    message="Could not load any ESM-2 model.",
                 )
 
         # Clean sequences (remove non-standard amino acids)
@@ -124,18 +124,18 @@ class EmbeddingsTool(BaseTool):
                 clean_sequences.append(clean)
 
         if not clean_sequences:
-            return ToolResult(status="error", message="Ninguna secuencia válida para procesar.")
+            return ToolResult(status="error", message="No valid sequences to process.")
 
         # Generate embeddings
         embeddings = self._get_embeddings_batch(clean_sequences)
 
         msg = (
-            f"Generé representaciones vectoriales de {len(clean_sequences)} péptidos "
-            f"usando ESM-2 ({self._model_desc}), un modelo de lenguaje proteico "
-            f"entrenado en 65 millones de secuencias (UniRef50). "
-            f"Cada péptido es un vector de {self._embed_dim} dimensiones "
-            f"que captura propiedades evolutivas y estructurales. "
-            f"Dispositivo: {self._device.upper()}."
+            f"Generated vector representations of {len(clean_sequences)} peptides "
+            f"using ESM-2 ({self._model_desc}), a protein language model "
+            f"trained on 65 million sequences (UniRef50). "
+            f"Each peptide is a {self._embed_dim}-dimensional vector "
+            f"capturing evolutionary and structural properties. "
+            f"Device: {self._device.upper()}."
         )
 
         return ToolResult(

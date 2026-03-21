@@ -182,12 +182,12 @@ def compute_all_properties(sequence: str) -> dict:
 
 class PropertiesTool(BaseTool):
     name = "Biochemical Properties"
-    description = "Calcula propiedades bioquímicas de péptidos"
+    description = "Computes biochemical properties of peptides"
     icon = "📊"
 
     def _execute(self, sequences: list[str]) -> ToolResult:
         if not sequences:
-            return ToolResult(status="error", message="No hay secuencias para analizar.")
+            return ToolResult(status="error", message="No sequences to analyze.")
 
         results = []
         for seq in sequences:
@@ -196,7 +196,7 @@ class PropertiesTool(BaseTool):
                 results.append(props)
 
         if not results:
-            return ToolResult(status="error", message="Ninguna secuencia válida para análisis.")
+            return ToolResult(status="error", message="No valid sequences for analysis.")
 
         df = pd.DataFrame(results)
 
@@ -207,11 +207,11 @@ class PropertiesTool(BaseTool):
         ideal_hm = (df["hydrophobic_moment"] > 0.3).sum()
 
         msg = (
-            f"Calculé 12 propiedades bioquímicas para {len(results)} péptidos. "
-            f"Los AMPs efectivos típicamente tienen carga +2 a +9 y alto momento hidrofóbico. "
-            f"De {len(results)} candidatos: {ideal_charge} tienen carga en rango ideal, "
-            f"{ideal_hm} tienen momento hidrofóbico alto (anfipacidad). "
-            f"Peso molecular promedio: {avg_mw:.0f} Da. Carga promedio: {avg_charge:.1f}."
+            f"Computed 12 biochemical properties for {len(results)} peptides. "
+            f"Effective AMPs typically have charge +2 to +9 and high hydrophobic moment. "
+            f"Of {len(results)} candidates: {ideal_charge} have charge in ideal range, "
+            f"{ideal_hm} have high hydrophobic moment (amphipathicity). "
+            f"Average molecular weight: {avg_mw:.0f} Da. Average charge: {avg_charge:.1f}."
         )
 
         return ToolResult(

@@ -17,7 +17,7 @@ ANIONIC_AA = set("DE")
 
 class GeneratorTool(BaseTool):
     name = "Variant Generator"
-    description = "Genera variantes optimizadas de péptidos semilla"
+    description = "Generates optimized variants from seed peptides"
     icon = "🧪"
 
     def _generate_point_mutations(self, sequence: str, max_variants: int = 60) -> list[dict]:
@@ -160,11 +160,11 @@ class GeneratorTool(BaseTool):
         )
 
         msg = (
-            f"Generé {len(all_variants)} variantes a partir de {len(seed_sequences)} péptidos semilla. "
-            f"Estrategias: {strategy_summary}. "
-            f"Las sustituciones priorizan residuos catiónicos (+K/R) para aumentar carga "
-            f"y residuos hidrofóbicos (+L/W/F) para mejorar anfipacidad. "
-            f"Incluí controles scrambled para validar que el orden de secuencia importa."
+            f"Generated {len(all_variants)} variants from {len(seed_sequences)} seed peptides. "
+            f"Strategies: {strategy_summary}. "
+            f"Substitutions prioritize cationic residues (+K/R) to increase charge "
+            f"and hydrophobic residues (+L/W/F) to improve amphipathicity. "
+            f"Included scrambled controls to validate that sequence order matters."
         )
 
         return ToolResult(

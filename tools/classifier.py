@@ -7,7 +7,7 @@ from tools import BaseTool, ToolResult
 
 class ClassifierTool(BaseTool):
     name = "AMP Classifier"
-    description = "Clasifica péptidos como AMP/non-AMP usando ML"
+    description = "Classifies peptides as AMP/non-AMP using ML"
     icon = "🤖"
 
     def __init__(self):
@@ -184,14 +184,14 @@ class ClassifierTool(BaseTool):
         top_feat_str = ", ".join(f"{name} ({imp:.3f})" for name, imp in top_features[:5])
 
         msg = (
-            f"Entrené un clasificador con AUC {mean_auc:.3f} ± {std_auc:.3f} "
-            f"en validación cruzada 5-fold. "
-            f"Datos de entrenamiento: {int(sum(y_train))} AMPs positivos, "
-            f"{int(len(y_train) - sum(y_train))} negativos. "
-            f"Features más predictivas: {top_feat_str} — "
-            f"consistente con la literatura que identifica carga neta y momento hidrofóbico "
-            f"como propiedades clave de AMPs. "
-            f"Clasifiqué {len(amp_probabilities)} candidatos."
+            f"Trained classifier with AUC {mean_auc:.3f} ± {std_auc:.3f} "
+            f"in 5-fold cross-validation. "
+            f"Training data: {int(sum(y_train))} positive AMPs, "
+            f"{int(len(y_train) - sum(y_train))} negatives. "
+            f"Most predictive features: {top_feat_str} — "
+            f"consistent with literature identifying net charge and hydrophobic moment "
+            f"as key AMP properties. "
+            f"Classified {len(amp_probabilities)} candidates."
         )
 
         return ToolResult(

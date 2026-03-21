@@ -17,47 +17,47 @@ def compute_toxicity_score(sequence: str, properties: dict) -> tuple[float, list
     gravy = properties.get("gravy", 0)
     if gravy > 0.5:
         score += 0.25
-        flags.append(f"Alta hidrofobicidad (GRAVY={gravy:.2f} > 0.5) — riesgo de lisis de células host")
+        flags.append(f"High hydrophobicity (GRAVY={gravy:.2f} > 0.5) — host cell lysis risk")
     elif gravy > 0.3:
         score += 0.10
-        flags.append(f"Hidrofobicidad moderada-alta (GRAVY={gravy:.2f})")
+        flags.append(f"Moderate-high hydrophobicity (GRAVY={gravy:.2f})")
 
     # 2. Very high positive charge → cytotoxicity
     charge = properties.get("net_charge_ph7", 0)
     if charge > 9:
         score += 0.25
-        flags.append(f"Carga muy alta (+{charge:.1f} > +9) — riesgo de citotoxicidad")
+        flags.append(f"Very high charge (+{charge:.1f} > +9) — cytotoxicity risk")
     elif charge > 7:
         score += 0.10
-        flags.append(f"Carga alta (+{charge:.1f})")
+        flags.append(f"High charge (+{charge:.1f})")
 
     # 3. Very long peptide → immunogenicity
     length = len(sequence)
     if length > 50:
         score += 0.15
-        flags.append(f"Péptido largo ({length} aa > 50) — riesgo de inmunogenicidad")
+        flags.append(f"Long peptide ({length} aa > 50) — immunogenicity risk")
 
     # 4. Cysteine-rich → off-target disulfide bonds
     cys_fraction = sequence.count("C") / max(length, 1)
     if cys_fraction > 0.12:
         score += 0.15
-        flags.append(f"Rico en cisteína ({cys_fraction:.0%} > 12%) — puentes disulfuro off-target")
+        flags.append(f"Cysteine-rich ({cys_fraction:.0%} > 12%) — off-target disulfide bonds")
 
     # 5. Hemolytic motifs: WxxW or WxxxW patterns
     if re.search(r"W.{2,3}W", sequence):
         score += 0.20
-        flags.append("Contiene motivo WxxW/WxxxW — asociado con actividad hemolítica")
+        flags.append("Contains WxxW/WxxxW motif — associated with hemolytic activity")
 
     # 6. Very low charge → poor selectivity
     if charge < 1:
         score += 0.15
-        flags.append(f"Carga baja (+{charge:.1f} < +1) — selectividad pobre por membranas microbianas")
+        flags.append(f"Low charge (+{charge:.1f} < +1) — poor selectivity for microbial membranes")
 
     # 7. High Boman index → strong protein binding (can bind host proteins)
     boman = properties.get("boman_index", 0)
     if boman > 2.5:
         score += 0.10
-        flags.append(f"Índice Boman alto ({boman:.2f} > 2.5) — unión a proteínas del host")
+        flags.append(f"High Boman index ({boman:.2f} > 2.5) — host protein binding")
 
     # Cap at 1.0
     score = min(score, 1.0)
@@ -111,12 +111,12 @@ def compute_selectivity_estimate(properties: dict) -> dict:
 
 class ToxicityTool(BaseTool):
     name = "Toxicity Screening"
-    description = "Evalúa riesgo de toxicidad y selectividad"
+    description = "Evaluates toxicity risk and selectivity"
     icon = "🛡️"
 
     def _execute(self, sequences: list[str], properties_list: list[dict]) -> ToolResult:
         if not sequences or not properties_list:
-            return ToolResult(status="error", message="No hay datos para screening.")
+            return ToolResult(status="error", message="No data for screening.")
 
         results = []
         n_passed = 0
@@ -151,13 +151,13 @@ class ToxicityTool(BaseTool):
         top_flags_str = "; ".join(f"{name} ({count}x)" for name, count in top_flags)
 
         msg = (
-            f"Screening de toxicidad completado para {len(sequences)} candidatos. "
-            f"{n_passed} pasaron todos los filtros (riesgo < 0.4). "
-            f"{n_flagged} fueron flaggeados por riesgo elevado. "
+            f"Toxicity screening completed for {len(sequences)} candidates. "
+            f"{n_passed} passed all filters (risk < 0.4). "
+            f"{n_flagged} flagged for elevated risk. "
         )
         if top_flags_str:
-            msg += f"Alertas más comunes: {top_flags_str}. "
-        msg += "Los candidatos aprobados tienen perfil favorable de selectividad patógeno/host."
+            msg += f"Most common alerts: {top_flags_str}. "
+        msg += "Approved candidates have a favorable pathogen/host selectivity profile."
 
         return ToolResult(
             status="success",
