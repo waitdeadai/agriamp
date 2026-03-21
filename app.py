@@ -37,17 +37,18 @@ st.set_page_config(
 st.markdown("""
 <style>
     .main-header {
-        font-size: 2.2rem;
+        font-size: 2.4rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #1a5e1a, #2d8f2d);
+        background: linear-gradient(135deg, #1a5e1a, #2d8f2d, #4caf50);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 0;
+        letter-spacing: -0.5px;
     }
     .subtitle {
-        font-size: 1.1rem;
-        color: #666;
-        margin-top: -10px;
+        font-size: 1.05rem;
+        color: #888;
+        margin-top: -8px;
         margin-bottom: 20px;
     }
     .metric-card {
@@ -60,6 +61,27 @@ st.markdown("""
     .step-running { border-left: 3px solid #ffc107; padding-left: 10px; }
     .step-error { border-left: 3px solid #dc3545; padding-left: 10px; }
     div[data-testid="stStatusWidget"] { display: none; }
+    .hero-box {
+        background: linear-gradient(135deg, #0d2818 0%, #1a3a2a 100%);
+        border: 1px solid #2d8f2d44;
+        border-radius: 12px;
+        padding: 24px 28px;
+        margin: 8px 0 20px 0;
+        color: #e0e0e0;
+    }
+    .hero-box h3 { color: #4caf50; margin-bottom: 8px; }
+    .hero-stat {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #4caf50;
+        line-height: 1.2;
+    }
+    .hero-label {
+        font-size: 0.78rem;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -143,13 +165,23 @@ def render_sidebar():
                 load_precomputed = st.checkbox("Cargar resultados pre-computados", value=False)
 
         st.divider()
+        with st.expander("Como funciona AgriAMP", expanded=False):
+            st.markdown("""
+            **6 herramientas bioinformaticas** ejecutadas como workflow agentico:
+
+            1. **Consulta DB** — 2,600+ AMPs conocidos de modlAMP + 25 curados
+            2. **Generador** — variantes optimizadas (K/R/L/W, carga, truncamiento)
+            3. **ESM-2 Embeddings** — protein language model, 650M params, 1280-dim
+            4. **Propiedades** — 12 descriptores bioquimicos (carga, GRAVY, pI, MW...)
+            5. **Clasificador ML** — Random Forest, AUC 0.954, PCA + propiedades
+            6. **Toxicidad** — screening rule-based (GRAVY, carga, largo, Cys, WxxW)
+
+            **Score:** `0.35*AMP + 0.25*carga + 0.20*anfipacidad + 0.10*estabilidad + 0.10*(1-tox)`
+            """)
+        st.divider()
         st.markdown("""
         **AgriAMP** v1.0
-        Pipeline agentico de bioinformatica para descubrimiento
-        de peptidos antimicrobianos contra patogenos de cultivos.
-
-        Desarrollado para Aleph Hackathon M26 — Track Biotech
-
+        Aleph Hackathon M26 — Track Biotech
         [GitHub](https://github.com/waitdeadai/agriamp)
         """)
 
@@ -206,7 +238,9 @@ def render_top_candidates(df: pd.DataFrame):
         labels={"agriamp_score": "AgriAMP Score", "label": "Peptido", "toxicity_risk": "Riesgo Tox."},
         title="Top 10 Candidatos por AgriAMP Score",
     )
-    fig.update_layout(height=400)
+    fig.add_hline(y=0.7, line_dash="dash", line_color="#4caf50", opacity=0.5,
+                  annotation_text="Umbral candidato prometedor (0.70)")
+    fig.update_layout(height=400, xaxis_tickangle=-30)
     st.plotly_chart(fig, use_container_width=True)
 
     # Detailed table
@@ -397,6 +431,26 @@ def render_sequence_viewer(df: pd.DataFrame):
         st.metric("Toxicidad", f"{pep['toxicity_risk']:.2f}")
         st.metric("AgriAMP Score", f"{pep['agriamp_score']:.4f}")
 
+    # Score breakdown
+    st.markdown("### Composicion del AgriAMP Score")
+    _charge_norm = min(max(pep["net_charge"] / 6, 0), 1)
+    _hm_norm = min(max(pep["hydrophobic_moment"] / 0.8, 0), 1)
+    _stab_norm = max(1 - pep["instability_index"] / 100, 0)
+    _tox_comp = 1 - pep["toxicity_risk"]
+    _components = {
+        "AMP Probability (35%)": pep["amp_probability"] * 0.35,
+        "Carga neta (25%)": _charge_norm * 0.25,
+        "Anfipacidad (20%)": _hm_norm * 0.20,
+        "Estabilidad (10%)": _stab_norm * 0.10,
+        "Baja toxicidad (10%)": _tox_comp * 0.10,
+    }
+    _comp_df = pd.DataFrame({"Componente": list(_components.keys()), "Contribucion": list(_components.values())})
+    _fig_comp = px.bar(_comp_df, x="Contribucion", y="Componente", orientation="h",
+                       color="Contribucion", color_continuous_scale="Greens",
+                       title=f"Score total: {pep['agriamp_score']:.4f}")
+    _fig_comp.update_layout(height=250, showlegend=False, yaxis=dict(autorange="reversed"))
+    st.plotly_chart(_fig_comp, use_container_width=True)
+
     # Helical wheel projection
     st.markdown("### Proyeccion Helical Wheel")
     st.caption("Muestra la distribucion anfipática — residuos hidrofobicos (amarillo) vs cationicos (azul) en una helice alfa")
@@ -555,9 +609,15 @@ def render_export(df: pd.DataFrame, pathogen: str):
 
 # ── MAIN APP ──
 def main():
-    # Header
-    st.markdown('<p class="main-header">AgriAMP</p>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">Pipeline Agentico de IA para Descubrimiento de Peptidos Antimicrobianos contra Patogenos de Cultivos</p>', unsafe_allow_html=True)
+    # Header with logo
+    _logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo_agriamp.png")
+    _hcol1, _hcol2 = st.columns([0.08, 0.92])
+    with _hcol1:
+        if os.path.exists(_logo_path):
+            st.image(_logo_path, width=64)
+    with _hcol2:
+        st.markdown('<p class="main-header">AgriAMP</p>', unsafe_allow_html=True)
+        st.markdown('<p class="subtitle">Pipeline Agentico de IA para Descubrimiento de Peptidos Antimicrobianos contra Patogenos de Cultivos</p>', unsafe_allow_html=True)
 
     # Sidebar
     pathogen, run_button, load_precomputed, precomputed_path, max_variants, tox_threshold = render_sidebar()
@@ -567,9 +627,17 @@ def main():
         st.session_state.agent_result = None
     if "agent_steps" not in st.session_state:
         st.session_state.agent_steps = []
+    if "loaded_pathogen" not in st.session_state:
+        st.session_state.loaded_pathogen = None
 
-    # Load precomputed if requested
-    if load_precomputed and os.path.exists(precomputed_path):
+    # Load precomputed if requested (or auto-load on cloud)
+    _should_load = load_precomputed and os.path.exists(precomputed_path)
+    if not _should_load and IS_CLOUD and os.path.exists(precomputed_path):
+        # Auto-load on cloud: first visit or pathogen changed
+        if st.session_state.agent_result is None or st.session_state.loaded_pathogen != pathogen:
+            _should_load = True
+
+    if _should_load and os.path.exists(precomputed_path):
         with open(precomputed_path, "r") as f:
             cached = json.load(f)
         st.session_state.agent_result = {
@@ -578,7 +646,9 @@ def main():
             "steps": cached.get("steps", []),
             "total_duration": cached.get("total_duration", 0),
         }
-        st.success("Resultados pre-computados cargados.")
+        st.session_state.loaded_pathogen = pathogen
+        if not IS_CLOUD:
+            st.success("Resultados pre-computados cargados.")
 
     # Run pipeline
     if run_button:
@@ -648,19 +718,21 @@ def main():
         # Show agent workflow log
         steps = data.get("steps", [])
         if steps:
-            with st.expander("Workflow Agentico (6 pasos)", expanded=False):
+            with st.expander("Workflow Agentico — 6 pasos completados", expanded=False):
                 for step in steps:
                     if isinstance(step, (list, tuple)) and len(step) >= 4:
                         name, icon, status, msg = step[0], step[1], step[2], step[3]
                         dur = step[4] if len(step) > 4 else 0
                     else:
                         continue
-                    status_icon = {"success": "OK", "warning": "WARN", "error": "ERR"}.get(status, "?")
-                    st.markdown(f"**{icon} {name}** [{status_icon}] — {msg}")
-                    if dur and dur > 0:
-                        st.caption(f"Duracion: {dur:.1f}s")
+                    status_icon = {"success": ":green[OK]", "warning": ":orange[WARN]", "error": ":red[ERR]"}.get(status, "?")
+                    dur_str = f" *({dur:.1f}s)*" if dur and dur > 0 else ""
+                    st.markdown(f"{icon} **{name}** {status_icon}{dur_str}  \n{msg}")
 
-            st.caption(f"Pipeline total: {data.get('total_duration', 0):.1f}s")
+            _total_dur = data.get('total_duration', 0)
+            _n_cands = len(df)
+            _n_passed = int(df['passed_toxicity'].sum()) if 'passed_toxicity' in df.columns else 0
+            st.caption(f"Pipeline completado en {_total_dur:.1f}s — {_n_cands} candidatos analizados, {_n_passed} pasaron screening de toxicidad")
 
         st.divider()
 
@@ -685,29 +757,46 @@ def main():
             render_export(df, pathogen)
 
     else:
-        # Welcome screen
-        st.divider()
+        # Welcome screen — hero
+        st.markdown("""
+        <div class="hero-box">
+            <h3>De tu cultivo a la solucion biologica</h3>
+            <p style="font-size:1.05rem;margin-bottom:16px;">
+                AgriAMP es un agente de bioinformatica que disena <b>peptidos antimicrobianos</b>
+                (biopesticidas naturales) contra patogenos de cultivos usando inteligencia artificial.
+                Describe tu problema — el agente ejecuta un pipeline completo de 6 pasos y
+                entrega candidatos peptidicos rankeados para sintesis.
+            </p>
+            <div style="display:flex;gap:40px;flex-wrap:wrap;">
+                <div><div class="hero-stat">650M</div><div class="hero-label">parametros ESM-2</div></div>
+                <div><div class="hero-stat">0.954</div><div class="hero-label">AUC clasificador</div></div>
+                <div><div class="hero-stat">6</div><div class="hero-label">tools bioinformaticos</div></div>
+                <div><div class="hero-stat">12</div><div class="hero-label">propiedades bioquimicas</div></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
         col1, col2, col3 = st.columns(3)
         with col1:
             st.markdown("""
-            ### 🔬 Problema
-            Los agroquimicos contaminan suelos, generan resistencia y enfrentan
-            restricciones regulatorias crecientes. Argentina usa 500M litros/ano.
+            #### Problema
+            Argentina usa **500M+ litros/kg de agroquimicos/ano**. Los patogenos generan resistencia.
+            La UE endurece bans. Los agronomos no tienen acceso a bioinformatica.
             """)
         with col2:
             st.markdown("""
-            ### 🧬 Solucion
-            AgriAMP usa IA (ESM-2 protein language model + ML) para disenar
-            peptidos antimicrobianos como biopesticidas alternativos.
+            #### Solucion
+            **Peptidos antimicrobianos** (AMPs) — armas del sistema inmune innato con
+            3+ mil millones de anos de evolucion. Atacan la membrana, no una via metabolica.
             """)
         with col3:
             st.markdown("""
-            ### 🚀 Pipeline
-            6 herramientas bioinformaticas orquestadas como workflow agentico:
-            consulta DB, embeddings, propiedades, clasificacion, generacion, toxicidad.
+            #### Pipeline Agentico
+            **6 herramientas** orquestadas como workflow de IA:
+            consulta DB → embeddings ESM-2 → propiedades → clasificador ML → generador → toxicidad.
             """)
 
-        st.info("Selecciona un patogeno y presiona **Ejecutar Pipeline AgriAMP** para comenzar el analisis.")
+        st.info("Selecciona un patogeno en la barra lateral y presiona **Ejecutar Pipeline AgriAMP** para comenzar.")
 
 
 if __name__ == "__main__":
