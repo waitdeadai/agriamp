@@ -5,3 +5,4 @@ __pycache__/
 dist/
 build/
 .env
+data/modlamp_embeddings.npz

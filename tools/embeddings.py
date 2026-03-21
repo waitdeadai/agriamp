@@ -132,7 +132,7 @@ class EmbeddingsTool(BaseTool):
         msg = (
             f"Generé representaciones vectoriales de {len(clean_sequences)} péptidos "
             f"usando ESM-2 ({self._model_desc}), un modelo de lenguaje proteico "
-            f"entrenado en 250 millones de secuencias. "
+            f"entrenado en 65 millones de secuencias (UniRef50). "
             f"Cada péptido es un vector de {self._embed_dim} dimensiones "
             f"que captura propiedades evolutivas y estructurales. "
             f"Dispositivo: {self._device.upper()}."

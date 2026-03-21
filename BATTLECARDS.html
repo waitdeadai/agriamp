@@ -90,7 +90,7 @@
     <tr><td class="highlight">0:45</td><td><b>INSIGHT:</b> ProteoGPT existe pero es para microbiologos. Nadie lo hace accesible para agronomos</td></tr>
     <tr><td class="highlight">1:05</td><td><b>SOLUCION:</b> "AgriAMP — le contas tu problema, te disena la solucion biologica"</td></tr>
     <tr><td class="highlight">1:15</td><td><b>DEMO EN VIVO:</b> Click Botrytis → 6 pasos → resultados → radar → helical wheel</td></tr>
-    <tr><td class="highlight">2:15</td><td><b>TECNICO:</b> ESM-2 650M params, 65M secuencias, RF AUC 0.954, 12 propiedades, toxicidad</td></tr>
+    <tr><td class="highlight">2:15</td><td><b>TECNICO:</b> ESM-2 650M params, 65M secuencias, RF AUC 0.977, MCC 0.858, 4600+ seqs entrenamiento</td></tr>
     <tr><td class="highlight">2:40</td><td><b>NEGOCIO:</b> Mercado biopesticidas $17-18B 2030. Sintesis $80-250/candidato screening</td></tr>
     <tr><td class="highlight">2:50</td><td><b>CIERRE:</b> "AgriAMP — de tu vinedo a la solucion biologica"</td></tr>
   </table>
@@ -124,9 +124,9 @@
       <div class="small">65M secuencias UniRef50 (NO 250M, eso era ESM-1)</div>
     </div>
     <div>
-      <div class="stat">0.954</div>
+      <div class="stat">0.977</div>
       <div class="stat-label">AUC clasificador RF</div>
-      <div class="small">5-fold CV, 300 AMPs + 300 non-AMPs</div>
+      <div class="small">5-fold CV estratificado, 2600 AMPs + 2600 non-AMPs</div>
     </div>
     <div>
       <div class="stat">$80-250</div>
@@ -179,7 +179,7 @@
   <div class="answer">El siguiente paso es sintesis quimica ($80-250/peptido screening) y ensayos de inhibicion in vitro contra Botrytis cinerea. El pipeline prioriza candidatos con propiedades que la literatura asocia a alta actividad y baja toxicidad. Es un pipeline hit-to-lead in silico.</div>
 
   <p style="margin-top:10px;"><b>"El clasificador no es solo un Random Forest basico?"</b></p>
-  <div class="answer">El poder predictivo viene de los embeddings de ESM-2 — representaciones de 1280 dimensiones aprendidas de 65 millones de secuencias proteicas. El RF actua sobre features que capturan estructura y evolucion, no solo composicion de aminoacidos. AUC 0.954 lo valida.</div>
+  <div class="answer">El poder predictivo viene de los embeddings de ESM-2 — representaciones de 1280 dimensiones aprendidas de 65 millones de secuencias proteicas. El RF actua sobre features que capturan estructura y evolucion, no solo composicion de aminoacidos. AUC 0.977 lo valida.</div>
 
   <p style="margin-top:10px;"><b>"Por que no usaron ESM-3 / ESM Cambrian?"</b></p>
   <div class="answer">ESM Cambrian (EvolutionaryScale, 300M/600M) es la siguiente iteracion. Lo evaluamos pero ESM-2 tiene mayor base instalada, documentacion, y compatibilidad con HuggingFace transformers. ESM Cambrian es el upgrade natural para la v2.</div>

@@ -169,15 +169,31 @@ def render_sidebar():
                 load_precomputed = st.checkbox("Cargar resultados pre-computados", value=False)
 
         st.divider()
+        with st.expander("Que son los peptidos antimicrobianos (AMPs)?", expanded=False):
+            st.markdown("""
+            Los **AMPs** son cadenas cortas de aminoacidos (10-50) presentes
+            en el **sistema inmune innato** de todos los organismos vivos.
+            Llevan **3+ mil millones de anos** de evolucion combatiendo patogenos.
+
+            **Mecanismo en 3 pasos:**
+            1. **Atraccion electrostatica** — AMPs cationicos (+) se unen a la membrana microbiana anionica (-)
+            2. **Insercion** — la cara hidrofobica penetra la bicapa lipidica
+            3. **Disrupcion** — forman poros que destruyen la membrana
+
+            **Ventaja vs pesticidas quimicos:** los pesticidas atacan UNA via
+            metabolica y generan resistencia. Los AMPs atacan la **estructura
+            fundamental de la membrana** — es la diferencia entre forzar una
+            cerradura y tirar la puerta abajo.
+            """)
         with st.expander("Como funciona AgriAMP", expanded=False):
             st.markdown("""
             **6 herramientas bioinformaticas** ejecutadas como workflow agentico:
 
-            1. **Consulta DB** — 2,600+ AMPs conocidos de modlAMP + 25 curados
+            1. **Consulta DB** — 4,600+ AMPs de modlAMP + 27 curados antifungicos
             2. **Generador** — variantes optimizadas (K/R/L/W, carga, truncamiento)
             3. **ESM-2 Embeddings** — protein language model, 650M params, 1280-dim
             4. **Propiedades** — 12 descriptores bioquimicos (carga, GRAVY, pI, MW...)
-            5. **Clasificador ML** — Random Forest, AUC 0.954, PCA + propiedades
+            5. **Clasificador ML** — Random Forest, AUC 0.977, 5-fold CV estratificado
             6. **Toxicidad** — screening rule-based (GRAVY, carga, largo, Cys, WxxW)
 
             **Score:** `0.35*AMP + 0.25*carga + 0.20*anfipacidad + 0.10*estabilidad + 0.10*(1-tox)`
@@ -510,14 +526,52 @@ def render_validation(metrics: dict):
         st.info("Se uso scoring basado en propiedades (no ML). Metricas de validacion cruzada no disponibles.")
         return
 
+    # Comprehensive metrics row
+    st.subheader("Metricas del Clasificador (Out-of-Fold)")
+    col_m1, col_m2, col_m3, col_m4, col_m5, col_m6 = st.columns(6)
+    with col_m1:
+        st.metric("AUC-ROC", f"{cv_auc:.3f}")
+    with col_m2:
+        st.metric("MCC", f"{metrics.get('oof_mcc', 0):.3f}")
+    with col_m3:
+        st.metric("Accuracy", f"{metrics.get('oof_accuracy', 0):.3f}")
+    with col_m4:
+        st.metric("F1-Score", f"{metrics.get('oof_f1', 0):.3f}")
+    with col_m5:
+        st.metric("Sensibilidad", f"{metrics.get('oof_sensitivity', 0):.3f}")
+    with col_m6:
+        st.metric("Especificidad", f"{metrics.get('oof_specificity', 0):.3f}")
+
+    st.caption(
+        f"Datos: {metrics.get('n_train_positive', 0)} AMPs + "
+        f"{metrics.get('n_train_negative', 0)} non-AMPs | "
+        f"5-fold CV estratificado | AUC std: ±{metrics.get('cv_auc_std', 0):.3f}"
+    )
+
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Performance del Clasificador")
-        st.metric("AUC-ROC (Cross-validation)", f"{cv_auc:.3f}")
-        st.metric("AUC-ROC (Training)", f"{metrics.get('train_auc', 0):.3f}")
-        st.metric("Positivos de entrenamiento", metrics.get("n_train_positive", 0))
-        st.metric("Negativos de entrenamiento", metrics.get("n_train_negative", 0))
+        # Confusion matrix heatmap
+        cm = metrics.get("confusion_matrix")
+        if cm and len(cm) == 2:
+            fig_cm = go.Figure(data=go.Heatmap(
+                z=cm,
+                x=["Pred: non-AMP", "Pred: AMP"],
+                y=["Real: non-AMP", "Real: AMP"],
+                text=[[str(cm[0][0]), str(cm[0][1])],
+                      [str(cm[1][0]), str(cm[1][1])]],
+                texttemplate="%{text}",
+                colorscale="Greens",
+                showscale=False,
+            ))
+            fig_cm.update_layout(
+                title="Matriz de Confusion (Out-of-Fold)",
+                height=350,
+                xaxis_title="Prediccion",
+                yaxis_title="Real",
+                yaxis=dict(autorange="reversed"),
+            )
+            st.plotly_chart(fig_cm, use_container_width=True)
 
         # CV scores bar
         cv_scores = metrics.get("cv_scores", [])
@@ -534,28 +588,271 @@ def render_validation(metrics: dict):
             st.plotly_chart(fig, use_container_width=True)
 
     with col2:
-        st.subheader("Curva ROC")
+        # ROC curve (use OOF predictions if available, else training)
         y_true = metrics.get("y_train_true", [])
-        y_pred = metrics.get("y_train_pred", [])
+        y_pred_oof = metrics.get("y_oof_proba", [])
+        y_pred_train = metrics.get("y_train_pred", [])
 
-        if y_true and y_pred:
+        if y_true and (y_pred_oof or y_pred_train):
             from sklearn.metrics import roc_curve, auc
 
-            fpr, tpr, _ = roc_curve(y_true, y_pred)
-            roc_auc = auc(fpr, tpr)
-
             fig = go.Figure()
-            fig.add_trace(go.Scatter(x=fpr, y=tpr, mode="lines", name=f"ROC (AUC={roc_auc:.3f})",
-                                     line=dict(color="#2d8f2d", width=2)))
-            fig.add_trace(go.Scatter(x=[0, 1], y=[0, 1], mode="lines", name="Random",
-                                     line=dict(color="gray", dash="dash")))
+
+            if y_pred_oof:
+                fpr_oof, tpr_oof, _ = roc_curve(y_true, y_pred_oof)
+                auc_oof = auc(fpr_oof, tpr_oof)
+                fig.add_trace(go.Scatter(
+                    x=fpr_oof, y=tpr_oof, mode="lines",
+                    name=f"OOF (AUC={auc_oof:.3f})",
+                    line=dict(color="#2d8f2d", width=2),
+                ))
+
+            if y_pred_train:
+                fpr_tr, tpr_tr, _ = roc_curve(y_true, y_pred_train)
+                auc_tr = auc(fpr_tr, tpr_tr)
+                fig.add_trace(go.Scatter(
+                    x=fpr_tr, y=tpr_tr, mode="lines",
+                    name=f"Training (AUC={auc_tr:.3f})",
+                    line=dict(color="#81C784", width=1.5, dash="dot"),
+                ))
+
+            fig.add_trace(go.Scatter(
+                x=[0, 1], y=[0, 1], mode="lines", name="Random",
+                line=dict(color="gray", dash="dash"),
+            ))
             fig.update_layout(
-                title="Curva ROC (Training Set)",
+                title="Curva ROC",
                 xaxis_title="False Positive Rate",
                 yaxis_title="True Positive Rate",
                 height=400,
             )
             st.plotly_chart(fig, use_container_width=True)
+
+
+def render_caso_real(df: pd.DataFrame, pathogen: str):
+    """Tab: Caso Real — real case study with verified data."""
+    st.markdown("""
+    <div class="hero-box">
+        <h3>Caso Real: Botrytis cinerea en Mendoza</h3>
+        <p style="font-size:1.05rem;">
+            La podredumbre gris (<i>Botrytis cinerea</i>) es el hongo mas agresivo y
+            prevalente en los vinedos de Mendoza. Un estudio de CONICET en fincas de
+            la region documento perdidas de hasta <b>71% de racimos, 57% en volumen
+            y 53% en peso</b> cuando ocurren infecciones severas.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Perdida en racimos", "71%", delta=None, help="Estudio CONICET, Mendoza")
+        st.metric("Exportaciones vino ARG", "~$800M/ano", help="Mendoza = 75% produccion nacional")
+    with col2:
+        st.metric("Perdida en volumen", "57%", delta=None, help="Volumen (cm3) afectado por Botrytis")
+        st.metric("Agroquimicos ARG/ano", "500M+ litros/kg", help="SPRINT-H2020, Mongabay 2020")
+    with col3:
+        st.metric("Perdida en peso", "53%", delta=None, help="Peso de cosecha perdido")
+        st.metric("Pesticidas ARG banned en UE", "106", help="Acuerdo EU-Mercosur, enero 2026")
+
+    st.divider()
+
+    st.markdown("#### Crisis Regulatoria")
+    st.markdown("""
+    - **Ban de neonicotinoides UE** (marzo 2026): clothianidin, imidacloprid, thiamethoxam prohibidos
+    - **Acuerdo EU-Mercosur**: Argentina tiene **106 principios activos prohibidos** en la UE — barrera para exportacion de vinos
+    - **Resistencia documentada**: mutaciones duales SDHI + QoI en poblaciones de *B. cinerea* a nivel global
+    - **Biopesticidas basados en peptidos aprobados para vid**: **ninguno** — oportunidad de mercado clara
+    """)
+
+    st.divider()
+
+    st.markdown("#### Validacion con AMPs Publicados")
+    st.markdown("""
+    | AMP | MIC vs *B. cinerea* | Fuente | Referencia |
+    |-----|---------------------|--------|------------|
+    | **Epinecidin-1** | 12.5 umol/L | *Epinephelus coioides* (mero) | J. Agric. Food Chem., 2022 |
+    | **EPI-4** (Epinecidin-1 + K) | **6 umol/L** (2x mejor) | Sintetico | ACS JAFC, 2015 |
+    | **Rs-AFP2** | 3 umol/L | *Raphanus sativus* (rabano) | Plant defensin literature |
+    | **NaD1** | 2 umol/L | *Nicotiana alata* (tabaco) | Plant defensin literature |
+
+    La modificacion de Epinecidin-1 a EPI-4 (agregar lisina C-terminal) **es exactamente lo que
+    hace nuestro generador de variantes**: sustitucion con residuos cationicos (+K/R) para
+    aumentar carga y actividad antimicrobiana.
+    """)
+
+    # Show Epinecidin in results if present
+    if not df.empty:
+        epi_matches = df[df["name"].str.contains("Epinecidin|EPI-4", case=False, na=False)]
+        if not epi_matches.empty:
+            st.divider()
+            st.markdown("#### Epinecidin en nuestros resultados")
+            for _, row in epi_matches.iterrows():
+                st.markdown(
+                    f"- **{row['name']}**: AgriAMP Score **{row['agriamp_score']:.4f}** | "
+                    f"Carga {row['net_charge']:+.1f} | AMP prob {row['amp_probability']:.3f} | "
+                    f"Toxicidad {row['toxicity_risk']:.2f} {'(aprobado)' if row['passed_toxicity'] else '(flaggeado)'}"
+                )
+
+    st.divider()
+    st.markdown("#### Proximo Paso: Validacion Experimental")
+    st.markdown("""
+    Los candidatos de AgriAMP son **candidatos in silico para validacion experimental**.
+    El siguiente paso es **sintesis quimica** ($80-250/peptido screening) y ensayos de
+    inhibicion in vitro contra *B. cinerea*. Socio natural: **INTA Mendoza** (Laboratorio
+    de Fitopatologia, equipo de Dra. Georgina Escoriaza).
+    """)
+
+
+def render_benchmark(metrics: dict):
+    """Tab: Benchmark comparison vs published SOTA tools."""
+    st.markdown("### AgriAMP vs Estado del Arte (2024-2026)")
+    st.markdown("""
+    Comparacion de metricas contra herramientas publicadas de prediccion de AMPs.
+    Todas las metricas de AgriAMP son **out-of-fold** (validacion cruzada estratificada 5-fold,
+    sin data leakage).
+    """)
+
+    # Our metrics
+    our_auc = metrics.get("cv_auc_mean", 0)
+    our_mcc = metrics.get("oof_mcc", 0)
+    our_sens = metrics.get("oof_sensitivity", 0)
+    our_spec = metrics.get("oof_specificity", 0)
+    our_acc = metrics.get("oof_accuracy", 0)
+    our_f1 = metrics.get("oof_f1", 0)
+    n_train = metrics.get("n_train_positive", 0) + metrics.get("n_train_negative", 0)
+
+    # Comparison data
+    benchmark_data = [
+        {
+            "Herramienta": "AgriAMP (nuestro)",
+            "Ano": "2026",
+            "Metodo": "ESM-2 + RF",
+            "Dataset": f"{n_train} seqs",
+            "AUC": our_auc,
+            "MCC": our_mcc,
+            "Sensibilidad": our_sens,
+            "Especificidad": our_spec,
+            "Ref": "Este trabajo",
+        },
+        {
+            "Herramienta": "amPEPpy",
+            "Ano": "2020",
+            "Metodo": "RF + features",
+            "Dataset": "Custom",
+            "AUC": 0.99,
+            "MCC": 0.90,
+            "Sensibilidad": None,
+            "Especificidad": None,
+            "Ref": "Biol. Direct, 2020",
+        },
+        {
+            "Herramienta": "PLAPD",
+            "Ano": "2025",
+            "Metodo": "ESM-2 + CNN + Transformer",
+            "Dataset": "8,268 seqs",
+            "AUC": 0.922,
+            "MCC": 0.749,
+            "Sensibilidad": None,
+            "Especificidad": 0.946,
+            "Ref": "Methods Cell Biol., 2025",
+        },
+        {
+            "Herramienta": "AMP-RNNpro",
+            "Ano": "2024",
+            "Metodo": "BiLSTM ensemble",
+            "Dataset": "Custom",
+            "AUC": None,
+            "MCC": None,
+            "Sensibilidad": 0.965,
+            "Especificidad": 0.979,
+            "Ref": "Sci. Reports, 2024",
+        },
+        {
+            "Herramienta": "sAMPpred-GAT",
+            "Ano": "2023",
+            "Metodo": "GAT + estructura",
+            "Dataset": "Multiple",
+            "AUC": None,
+            "MCC": None,
+            "Sensibilidad": None,
+            "Especificidad": None,
+            "Ref": "8 test sets, 2023",
+        },
+    ]
+
+    bench_df = pd.DataFrame(benchmark_data)
+
+    def fmt_metric(v):
+        if v is None:
+            return "—"
+        return f"{v:.3f}"
+
+    display_df = bench_df.copy()
+    for col in ["AUC", "MCC", "Sensibilidad", "Especificidad"]:
+        display_df[col] = display_df[col].apply(fmt_metric)
+
+    st.dataframe(display_df, use_container_width=True, hide_index=True)
+
+    st.caption("""
+    *Nota: Las metricas NO son directamente comparables entre herramientas (cada una usa datasets diferentes).
+    amPEPpy reporta AUC 0.99 en su propio dataset custom. AgriAMP usa el benchmark estandar modlAMP.
+    La comparacion muestra que nuestro pipeline es competitivo en el rango SOTA.*
+    """)
+
+    # AUC comparison bar chart
+    auc_tools = [d for d in benchmark_data if d["AUC"] is not None]
+    if auc_tools:
+        fig = go.Figure()
+        colors = ["#2d8f2d" if d["Herramienta"].startswith("AgriAMP") else "#666"
+                  for d in auc_tools]
+        fig.add_trace(go.Bar(
+            x=[d["Herramienta"] for d in auc_tools],
+            y=[d["AUC"] for d in auc_tools],
+            marker_color=colors,
+            text=[f"{d['AUC']:.3f}" for d in auc_tools],
+            textposition="outside",
+        ))
+        fig.update_layout(
+            title="AUC-ROC: AgriAMP vs Herramientas Publicadas",
+            yaxis_title="AUC-ROC",
+            yaxis=dict(range=[0.85, 1.02]),
+            height=350,
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    st.divider()
+
+    st.markdown("#### Diferenciador de AgriAMP")
+    st.markdown("""
+    Las herramientas comparadas son **clasificadores**: reciben una secuencia y predicen
+    si es AMP. AgriAMP es un **pipeline agentico completo** que:
+
+    1. Consulta bases de datos de AMPs conocidos para el patogeno especifico
+    2. Genera variantes optimizadas con mutaciones dirigidas
+    3. Genera embeddings con ESM-2 (650M params)
+    4. Calcula 12 propiedades bioquimicas
+    5. Clasifica con Random Forest (AUC competitivo)
+    6. Filtra por toxicidad y selectividad
+
+    **Ninguna otra herramienta ofrece este workflow integrado y accesible para agronomos.**
+    """)
+
+    # Our full metrics summary
+    st.divider()
+    st.markdown("#### Metricas Completas de AgriAMP")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("AUC-ROC", f"{our_auc:.3f}")
+        st.metric("MCC", f"{our_mcc:.3f}")
+    with col2:
+        st.metric("Accuracy", f"{our_acc:.3f}")
+        st.metric("F1-Score", f"{our_f1:.3f}")
+    with col3:
+        st.metric("Sensibilidad", f"{our_sens:.3f}")
+        st.metric("Especificidad", f"{our_spec:.3f}")
+    with col4:
+        st.metric("Datos entrenamiento", f"{n_train}")
+        st.metric("CV Folds", "5 (estratificado)")
 
 
 def render_export(df: pd.DataFrame, pathogen: str):
@@ -745,23 +1042,29 @@ def main():
         st.divider()
 
         # Results tabs
-        tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+            "🌍 Caso Real",
             "🏆 Top Candidatos",
             "📊 Analisis de Propiedades",
             "🧬 Visor de Secuencias",
+            "📈 Benchmark vs SOTA",
             "✅ Validacion ML",
             "📥 Exportar",
         ])
 
         with tab1:
-            render_top_candidates(df)
+            render_caso_real(df, pathogen)
         with tab2:
-            render_property_analysis(df, metrics)
+            render_top_candidates(df)
         with tab3:
-            render_sequence_viewer(df)
+            render_property_analysis(df, metrics)
         with tab4:
-            render_validation(metrics)
+            render_sequence_viewer(df)
         with tab5:
+            render_benchmark(metrics)
+        with tab6:
+            render_validation(metrics)
+        with tab7:
             render_export(df, pathogen)
 
     else:
@@ -777,9 +1080,9 @@ def main():
             </p>
             <div style="display:flex;gap:40px;flex-wrap:wrap;">
                 <div><div class="hero-stat">650M</div><div class="hero-label">parametros ESM-2</div></div>
-                <div><div class="hero-stat">0.954</div><div class="hero-label">AUC clasificador</div></div>
+                <div><div class="hero-stat">0.977</div><div class="hero-label">AUC clasificador</div></div>
+                <div><div class="hero-stat">4,600+</div><div class="hero-label">secuencias entrenamiento</div></div>
                 <div><div class="hero-stat">6</div><div class="hero-label">tools bioinformaticos</div></div>
-                <div><div class="hero-stat">12</div><div class="hero-label">propiedades bioquimicas</div></div>
             </div>
         </div>
         """, unsafe_allow_html=True)

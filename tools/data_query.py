@@ -7,6 +7,9 @@ from tools import BaseTool, ToolResult
 # Curated antifungal AMPs from literature — fallback if modlamp/DRAMP unavailable
 CURATED_ANTIFUNGAL_AMPS = [
     # (name, sequence, source_organism, target, MIC_uM_approx)
+    # Validated anti-Botrytis AMPs (J. Agric. Food Chem., ScienceDirect 2022)
+    ("Epinecidin-1", "GFIFHIIKGLFHAGKMIHGLV", "Epinephelus coioides", "Botrytis cinerea", 12.5),
+    ("EPI-4", "GFIFHIIKGLFHAGKMIHGLVK", "Synthetic (Epinecidin-1 + K)", "Botrytis cinerea", 6.0),
     ("Magainin 2", "GIGKFLHSAKKFGKAFVGEIMNS", "Xenopus laevis", "Broad-spectrum antifungal", 50),
     ("Cecropin B", "KWKIFKKIEKVGRNIRDGIIKAGPAVAVVGQATQIAK", "Hyalophora cecropia", "Botrytis cinerea", 25),
     ("Dermaseptin S1", "ALWKTMLKKLGTMALHAGKAALGAAADTISQTQ", "Phyllomedusa sauvagii", "Candida, Aspergillus", 10),

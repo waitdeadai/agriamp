@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriAMP — Guión Demo Video</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 24px;
+    color: #00ff88;
+    text-align: center;
+    margin-bottom: 6px;
+    font-family: monospace;
+  }
+  .meta {
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+  .scene {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .scene-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .scene-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #00ff88;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .scene-time {
+    background: #00ff8822;
+    color: #00ff88;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: monospace;
+  }
+  .action {
+    background: #1a1a2e;
+    border-left: 3px solid #42A5F5;
+    padding: 8px 12px;
+    margin: 8px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+  }
+  .action::before {
+    content: "HACER: ";
+    color: #42A5F5;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .say {
+    background: #0d2818;
+    border-left: 3px solid #00ff88;
+    padding: 8px 12px;
+    margin: 8px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+    font-style: italic;
+  }
+  .say::before {
+    content: "VOZ: ";
+    color: #00ff88;
+    font-weight: bold;
+    font-size: 12px;
+    font-style: normal;
+  }
+  .tip {
+    background: #2a2a0a;
+    border-left: 3px solid #ffd93d;
+    padding: 8px 12px;
+    margin: 8px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+  }
+  .tip::before {
+    content: "TIP: ";
+    color: #ffd93d;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .checklist {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+  }
+  .checklist h3 {
+    color: #ffd93d;
+    font-size: 14px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .checklist li {
+    margin-bottom: 4px;
+    list-style: none;
+  }
+  .checklist li::before {
+    content: "[ ] ";
+    font-family: monospace;
+    color: #666;
+  }
+  hr { border: none; border-top: 1px solid #333; margin: 16px 0; }
+  .highlight { color: #00ff88; font-weight: bold; }
+  .warn { color: #ffd93d; }
+  .total-time {
+    text-align: center;
+    font-size: 20px;
+    color: #00ff88;
+    font-weight: bold;
+    margin: 16px 0;
+    font-family: monospace;
+  }
+</style>
+</head>
+<body>
+
+<h1>GUIÓN DEMO VIDEO — AgriAMP</h1>
+<p class="meta">Duración target: 2:30 - 3:00 min | Grabar con OBS/pantalla | Voz en off o subtítulos</p>
+<div class="total-time">DURACIÓN TOTAL: ~2:40</div>
+
+<!-- PRE-GRABACIÓN -->
+<div class="checklist">
+  <h3>Antes de grabar</h3>
+  <ul>
+    <li>Abrir la app de Streamlit (URL de cloud o localhost:8501)</li>
+    <li>Verificar que carga con resultados de Botrytis cinerea</li>
+    <li>Cerrar notificaciones / popups del sistema</li>
+    <li>Resolución: 1920x1080 (o la más alta que tengas)</li>
+    <li>Modo oscuro del navegador si es posible (se ve mejor)</li>
+    <li>Tab única — sin otras tabs visibles</li>
+    <li>Si grabás voz: lugar silencioso, hablar claro y pausado</li>
+    <li>Si NO grabás voz: agregar subtítulos después o solo mostrar la app</li>
+  </ul>
+</div>
+
+<hr>
+
+<!-- ESCENA 1 -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Escena 1 — Apertura</span>
+    <span class="scene-time">0:00 - 0:15</span>
+  </div>
+  <div class="action">Mostrar la app recién cargada. El logo + título "AgriAMP" deben ser visibles. El sidebar a la izquierda con "Botrytis cinerea" seleccionado.</div>
+  <div class="say">"AgriAMP es un pipeline agéntico de inteligencia artificial para diseñar péptidos antimicrobianos — biopesticidas naturales — contra patógenos de cultivos."</div>
+  <div class="tip">Si la app muestra resultados inmediatamente (cloud mode), perfecto. Si es local, todavía no clickear nada.</div>
+</div>
+
+<!-- ESCENA 2 -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Escena 2 — El problema</span>
+    <span class="scene-time">0:15 - 0:30</span>
+  </div>
+  <div class="action">Mostrar el sidebar: el selector de patógeno con "Botrytis cinerea (Podredumbre gris)" y la info del patógeno (Uvas, Mendoza, 30% pérdida).</div>
+  <div class="say">"Nuestro caso: Botrytis cinerea, el hongo que causa podredumbre gris en uvas de Mendoza. Destruye hasta el 30 por ciento de la cosecha en temporadas húmedas. La defensa estándar son fungicidas químicos — Argentina usa más de 500 millones de litros al año."</div>
+</div>
+
+<!-- ESCENA 3 -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Escena 3 — Workflow agéntico</span>
+    <span class="scene-time">0:30 - 0:55</span>
+  </div>
+  <div class="action">Clickear el expander "Workflow Agéntico — 6 pasos completados" para abrirlo. Scroll lento por los 6 pasos para que se lean.</div>
+  <div class="say">"El agente ejecuta un pipeline de 6 pasos. Primero consulta una base de datos de más de 4,600 péptidos antimicrobianos conocidos. Genera variantes optimizadas. Calcula embeddings con ESM-2, un modelo de lenguaje proteico de 650 millones de parámetros de Meta. Analiza 12 propiedades bioquímicas. Entrena un clasificador con AUC 0.977. Y filtra toxicidad."</div>
+  <div class="tip">No apurarse — dejar que la cámara muestre cada paso con su ícono y mensaje. Es lo más impresionante para los jurados.</div>
+</div>
+
+<!-- ESCENA 4 -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Escena 4 — Top Candidatos</span>
+    <span class="scene-time">0:55 - 1:20</span>
+  </div>
+  <div class="action">Clickear tab "Top Candidatos". Mostrar las 4 métricas arriba (candidatos analizados, pasaron toxicidad, top score, carga promedio). Luego scroll al bar chart de top 10.</div>
+  <div class="say">"De 160 candidatos analizados, 159 pasaron el screening de toxicidad. El top score es 0.88. Acá vemos los 10 mejores candidatos — LL-37, Magainin 2, Dermaseptina — péptidos con actividad antimicrobiana comprobada, más variantes optimizadas generadas por nuestro pipeline."</div>
+  <div class="action">Scroll lento a la tabla de candidatos. Hacer hover sobre una fila para mostrar los detalles.</div>
+  <div class="say">"Cada candidato tiene su score compuesto, probabilidad AMP, carga neta, peso molecular, momento hidrofóbico, y riesgo de toxicidad."</div>
+</div>
+
+<!-- ESCENA 5 -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Escena 5 — Análisis de Propiedades</span>
+    <span class="scene-time">1:20 - 1:45</span>
+  </div>
+  <div class="action">Clickear tab "Análisis de Propiedades". Mostrar el radar chart (candidato vs perfil ideal). Luego mostrar el feature importance chart.</div>
+  <div class="say">"El radar compara nuestro mejor candidato contra el perfil de un AMP ideal. Carga, anfipacidad, estabilidad, selectividad, baja toxicidad. Y el clasificador nos dice qué features son más predictivas — carga neta y momento hidrofóbico, exactamente lo que la literatura científica indica."</div>
+  <div class="action">Scroll rápido por las distribuciones de propiedades (carga, momento hidrofóbico, peso molecular).</div>
+</div>
+
+<!-- ESCENA 6 -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Escena 6 — Visor de Secuencias</span>
+    <span class="scene-time">1:45 - 2:10</span>
+  </div>
+  <div class="action">Clickear tab "Visor de Secuencias". Mostrar la secuencia coloreada del top candidato (LL-37 o Magainin 2). Mostrar la leyenda de colores.</div>
+  <div class="say">"Cada aminoácido está coloreado por tipo: amarillo hidrofóbico, azul catiónico, rojo aniónico, verde polar. Esto permite visualizar la anfipacidad — la clave de la actividad antimicrobiana."</div>
+  <div class="action">Scroll al score breakdown chart. Mostrar la composición del score.</div>
+  <div class="say">"El score compuesto combina probabilidad AMP, carga, anfipacidad, estabilidad, y baja toxicidad."</div>
+  <div class="action">Scroll al helical wheel. Pausar 3 segundos para que se vea bien.</div>
+  <div class="say">"El helical wheel muestra cómo se distribuyen los aminoácidos en una hélice alfa — los hidrofóbicos de un lado, los cargados del otro. Esta distribución anfipática es lo que permite al péptido insertarse en la membrana del patógeno y destruirla."</div>
+</div>
+
+<!-- ESCENA 7 -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Escena 7 — Validación ML</span>
+    <span class="scene-time">2:10 - 2:25</span>
+  </div>
+  <div class="action">Clickear tab "Validación ML". Mostrar el AUC-ROC y la curva ROC.</div>
+  <div class="say">"El clasificador Random Forest alcanza un AUC de 0.977 en validación cruzada de 5 folds — rendimiento robusto sobre embeddings de ESM-2 combinados con propiedades bioquímicas."</div>
+  <div class="tip">Pausá en el número 0.977 — es un número fuerte y los jurados lo van a notar.</div>
+</div>
+
+<!-- ESCENA 8 -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Escena 8 — Cierre</span>
+    <span class="scene-time">2:25 - 2:40</span>
+  </div>
+  <div class="action">Volver al sidebar. Cambiar patógeno a "Fusarium graminearum" para mostrar que funciona con múltiples patógenos. Esperar que cargue.</div>
+  <div class="say">"El pipeline funciona con cualquier patógeno agrícola. Fusarium en trigo, Xanthomonas en cítricos, Ralstonia en tomates. De tu cultivo a la solución biológica."</div>
+  <div class="action">Volver a Botrytis. Mostrar el título "AgriAMP" con el logo como cierre.</div>
+  <div class="say">"AgriAMP — péptidos antimicrobianos diseñados por inteligencia artificial para proteger la agricultura del futuro."</div>
+</div>
+
+<hr>
+
+<!-- POST-GRABACIÓN -->
+<div class="checklist">
+  <h3>Después de grabar</h3>
+  <ul>
+    <li>Revisar que todos los tabs se ven claros</li>
+    <li>Verificar que la voz se escucha bien (si grabaron voz)</li>
+    <li>Recortar inicio/final si hay silencio</li>
+    <li>Verificar duración final: 2:30 - 3:00 máx</li>
+    <li>Formato: MP4, 1080p</li>
+    <li>Subir a YouTube (no listado) o Google Drive (público) para pegar link en DoraHacks</li>
+  </ul>
+</div>
+
+<div class="checklist">
+  <h3>Si NO querés grabar voz</h3>
+  <ul>
+    <li>Grabá solo la pantalla sin audio</li>
+    <li>El video silencioso con la navegación por la app ya es suficiente</li>
+    <li>Los gráficos y datos hablan solos</li>
+    <li>Opcionalmente agregá subtítulos con el texto de "VOZ" de cada escena</li>
+  </ul>
+</div>
+
+<hr>
+
+<!-- GUIÓN ALTERNATIVO: PITCH EN VIVO 3 MIN -->
+<div class="scene" style="border-left: 4px solid #ffd93d;">
+  <div class="scene-header">
+    <span class="scene-title" style="color: #ffd93d;">ALTERNATIVA: Pitch en vivo 3 min</span>
+    <span class="scene-time">3:00</span>
+  </div>
+  <p style="margin-bottom:10px;">Si además del video te toca presentar en vivo, este es el flow:</p>
+  <table style="width:100%; font-size:14px; border-collapse: collapse;">
+    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;width:50px;"><b>0:00</b></td><td style="padding:6px;"><b>HOOK:</b> "En Mendoza perdemos hasta 30-50% de la cosecha de Malbec por Botrytis cinerea. ¿Y si pudiéramos reemplazar los fungicidas con las armas más antiguas de la naturaleza?"</td></tr>
+    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>0:20</b></td><td style="padding:6px;"><b>PROBLEMA:</b> 500M+ litros agroquímicos/año. Resistencia. EU bans. Gap entre ciencia y campo.</td></tr>
+    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>0:45</b></td><td style="padding:6px;"><b>INSIGHT:</b> ProteoGPT existe pero es para microbiólogos. Nadie lo hace accesible para agrónomos.</td></tr>
+    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>1:05</b></td><td style="padding:6px;"><b>SOLUCIÓN:</b> "AgriAMP — le contás tu problema, te diseña la solución biológica."</td></tr>
+    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>1:15</b></td><td style="padding:6px;"><b>DEMO EN VIVO:</b> Abrir app → workflow 6 pasos → top candidatos → radar → helical wheel</td></tr>
+    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>2:15</b></td><td style="padding:6px;"><b>TÉCNICO:</b> ESM-2 650M params, 65M secuencias, RF AUC 0.977, 12 propiedades</td></tr>
+    <tr style="border-bottom:1px solid #333;"><td style="padding:6px;color:#00ff88;"><b>2:40</b></td><td style="padding:6px;"><b>NEGOCIO:</b> Mercado biopesticidas $17-18B 2030. Síntesis $80-250/candidato.</td></tr>
+    <tr><td style="padding:6px;color:#00ff88;"><b>2:50</b></td><td style="padding:6px;"><b>CIERRE:</b> "AgriAMP — de tu viñedo a la solución biológica."</td></tr>
+  </table>
+</div>
+
+<p style="text-align:center; color:#333; font-size:11px; margin-top:14px;">
+  AgriAMP Demo Script — Aleph Hackathon M26 Biotech Track — 21 mar 2026
+</p>
+
+</body>
+</html>

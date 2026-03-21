@@ -72,8 +72,11 @@ class ClassifierTool(BaseTool):
         candidate_properties: list[dict],
     ) -> ToolResult:
         from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-        from sklearn.model_selection import cross_val_score
-        from sklearn.metrics import roc_auc_score, classification_report
+        from sklearn.model_selection import cross_val_score, cross_val_predict, StratifiedKFold
+        from sklearn.metrics import (
+            roc_auc_score, matthews_corrcoef, f1_score,
+            precision_score, recall_score, accuracy_score, confusion_matrix,
+        )
 
         # Build training features
         all_train_embeddings = np.vstack([amp_embeddings, non_amp_embeddings])
@@ -92,22 +95,51 @@ class ClassifierTool(BaseTool):
             n_jobs=-1,
         )
 
-        # Cross-validation
-        cv_scores = cross_val_score(self._model, X_train, y_train, cv=5, scoring="roc_auc")
+        # Stratified cross-validation
+        skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+        cv_scores = cross_val_score(self._model, X_train, y_train, cv=skf, scoring="roc_auc")
         mean_auc = cv_scores.mean()
         std_auc = cv_scores.std()
+
+        # Out-of-fold predictions for honest metrics
+        y_oof_proba = cross_val_predict(
+            self._model, X_train, y_train, cv=skf, method="predict_proba"
+        )[:, 1]
+        y_oof_pred = (y_oof_proba >= 0.5).astype(int)
+
+        # Comprehensive metrics from out-of-fold predictions
+        oof_mcc = matthews_corrcoef(y_train, y_oof_pred)
+        oof_f1 = f1_score(y_train, y_oof_pred)
+        oof_sensitivity = recall_score(y_train, y_oof_pred)  # recall of class 1
+        oof_specificity = recall_score(y_train, y_oof_pred, pos_label=0)  # recall of class 0
+        oof_precision = precision_score(y_train, y_oof_pred)
+        oof_accuracy = accuracy_score(y_train, y_oof_pred)
+        oof_cm = confusion_matrix(y_train, y_oof_pred).tolist()
 
         # If AUC is low, try Gradient Boosting
         if mean_auc < 0.85:
             gb_model = GradientBoostingClassifier(
                 n_estimators=200, max_depth=5, learning_rate=0.1, random_state=42
             )
-            gb_scores = cross_val_score(gb_model, X_train, y_train, cv=5, scoring="roc_auc")
+            gb_scores = cross_val_score(gb_model, X_train, y_train, cv=skf, scoring="roc_auc")
             if gb_scores.mean() > mean_auc:
                 self._model = gb_model
                 cv_scores = gb_scores
                 mean_auc = gb_scores.mean()
                 std_auc = gb_scores.std()
+                # Recompute OOF metrics
+                y_oof_proba = cross_val_predict(
+                    self._model, X_train, y_train, cv=skf, method="predict_proba"
+                )[:, 1]
+                y_oof_pred = (y_oof_proba >= 0.5).astype(int)
+                oof_mcc = matthews_corrcoef(y_train, y_oof_pred)
+                oof_f1 = f1_score(y_train, y_oof_pred)
+                oof_sensitivity = recall_score(y_train, y_oof_pred)
+                oof_specificity = recall_score(y_train, y_oof_pred, pos_label=0)
+                oof_precision = precision_score(y_train, y_oof_pred)
+                oof_accuracy = accuracy_score(y_train, y_oof_pred)
+                oof_cm = confusion_matrix(y_train, y_oof_pred).tolist()
 
         # Fit on full training data
         self._model.fit(X_train, y_train)
@@ -119,7 +151,7 @@ class ClassifierTool(BaseTool):
             self._feature_importances.items(), key=lambda x: x[1], reverse=True
         )[:10]
 
-        # Training predictions for metrics
+        # Training predictions for ROC curve visualization
         y_train_pred = self._model.predict_proba(X_train)[:, 1]
         train_auc = roc_auc_score(y_train, y_train_pred)
 
@@ -133,6 +165,15 @@ class ClassifierTool(BaseTool):
             "n_train_negative": int(len(y_train) - sum(y_train)),
             "y_train_true": y_train.tolist(),
             "y_train_pred": y_train_pred.tolist(),
+            # Out-of-fold metrics (honest, no data leakage)
+            "y_oof_proba": y_oof_proba.tolist(),
+            "oof_mcc": round(oof_mcc, 3),
+            "oof_f1": round(oof_f1, 3),
+            "oof_sensitivity": round(oof_sensitivity, 3),
+            "oof_specificity": round(oof_specificity, 3),
+            "oof_precision": round(oof_precision, 3),
+            "oof_accuracy": round(oof_accuracy, 3),
+            "confusion_matrix": oof_cm,
         }
 
         # Classify candidates

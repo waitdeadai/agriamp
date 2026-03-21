@@ -2,6 +2,7 @@
 
 import time
 import random
+import os
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass, field
@@ -13,8 +14,10 @@ from tools.classifier import ClassifierTool
 from tools.generator import GeneratorTool
 from tools.toxicity import ToxicityTool
 
-# Max training samples for ESM-2 embeddings (speed vs accuracy tradeoff)
-MAX_TRAIN_SAMPLES = 300
+# Path to pre-computed embeddings (run precompute_embeddings.py to generate)
+CACHED_EMBEDDINGS_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "data", "modlamp_embeddings.npz"
+)
 
 
 @dataclass
@@ -93,37 +96,93 @@ class AgriAMPAgent:
         all_candidate_seqs = list(seed_sequences) + list(variant_sequences)
 
         # ═══════════════════════════════════════════════════════════
-        # STEP 3: ESM-2 Embeddings (sampled training + all candidates)
+        # STEP 3: ESM-2 Embeddings (cached training + live candidates)
         # ═══════════════════════════════════════════════════════════
-        # Sample training data for speed (300 AMPs + 300 non-AMPs)
-        sampled_amps = random.sample(all_amp_seqs, min(MAX_TRAIN_SAMPLES, len(all_amp_seqs)))
-        sampled_non = random.sample(non_amp_seqs, min(MAX_TRAIN_SAMPLES, len(non_amp_seqs))) if non_amp_seqs else []
-
-        total_to_embed = len(sampled_amps) + len(sampled_non) + len(all_candidate_seqs)
-        notify(AgentStep("ESM-2 Embeddings", "🧬", "running",
-                         f"Generando embeddings con ESM-2 (650M params) para {total_to_embed} secuencias "
-                         f"({len(sampled_amps)} AMPs + {len(sampled_non)} non-AMPs + {len(all_candidate_seqs)} candidatos)..."))
-
-        # Single embedding pass for all sequences
-        all_seqs = list(sampled_amps) + list(sampled_non) + list(all_candidate_seqs)
-        r3 = self.embedding_tool.run(sequences=all_seqs)
-        self._update_step(result, r3, callback)
-
-        if r3.status == "error":
-            result.total_duration = time.time() - start_total
-            return result
-
-        embeddings_all = r3.data["embeddings"]
-        clean_seqs_all = r3.data["sequences"]
-
-        # Build index for clean sequences
-        seq_to_emb = {}
-        for i, seq in enumerate(clean_seqs_all):
-            if seq not in seq_to_emb:
-                seq_to_emb[seq] = embeddings_all[i]
-
         def clean_seq(s):
             return "".join(c for c in s.upper() if c in "ACDEFGHIKLMNPQRSTVWY")
+
+        use_cache = os.path.exists(CACHED_EMBEDDINGS_PATH)
+
+        if use_cache:
+            # Load pre-computed embeddings for training data
+            cached = np.load(CACHED_EMBEDDINGS_PATH, allow_pickle=True)
+            cached_seqs = cached["sequences"].tolist()
+            cached_labels = cached["labels"].tolist()
+            cached_embs = cached["embeddings"]
+            embed_dim = cached_embs.shape[1]
+
+            n_cached = len(cached_seqs)
+            n_amp_cached = sum(cached_labels)
+            n_non_cached = n_cached - n_amp_cached
+
+            notify(AgentStep("ESM-2 Embeddings", "🧬", "running",
+                             f"Cargando {n_cached} embeddings pre-computados ({n_amp_cached} AMPs + {n_non_cached} non-AMPs) "
+                             f"+ generando embeddings para {len(all_candidate_seqs)} candidatos con ESM-2 (650M params)..."))
+
+            # Build cached lookup
+            cached_seq_to_emb = {}
+            cached_seq_to_label = {}
+            for i, seq in enumerate(cached_seqs):
+                if seq not in cached_seq_to_emb:
+                    cached_seq_to_emb[seq] = cached_embs[i]
+                    cached_seq_to_label[seq] = cached_labels[i]
+
+            # Map training sequences to cached embeddings
+            sampled_amps = []
+            sampled_non = []
+            for seq in all_amp_seqs:
+                cs = clean_seq(seq)
+                if cs in cached_seq_to_emb:
+                    sampled_amps.append(cs)
+            for seq in non_amp_seqs:
+                cs = clean_seq(seq)
+                if cs in cached_seq_to_emb:
+                    sampled_non.append(cs)
+
+            # Embed only candidates (fast: ~160 sequences)
+            r3 = self.embedding_tool.run(sequences=all_candidate_seqs)
+            self._update_step(result, r3, callback)
+
+            if r3.status == "error":
+                result.total_duration = time.time() - start_total
+                return result
+
+            cand_embeddings = r3.data["embeddings"]
+            cand_clean_seqs = r3.data["sequences"]
+
+            # Unified lookup: cached + candidate
+            seq_to_emb = dict(cached_seq_to_emb)
+            for i, seq in enumerate(cand_clean_seqs):
+                if seq not in seq_to_emb:
+                    seq_to_emb[seq] = cand_embeddings[i]
+
+        else:
+            # No cache — embed everything (original behavior)
+            sampled_amps = list(all_amp_seqs)
+            sampled_non = list(non_amp_seqs)
+            embed_dim = 1280  # default ESM-2 650M
+
+            total_to_embed = len(sampled_amps) + len(sampled_non) + len(all_candidate_seqs)
+            notify(AgentStep("ESM-2 Embeddings", "🧬", "running",
+                             f"Generando embeddings con ESM-2 (650M params) para {total_to_embed} secuencias "
+                             f"({len(sampled_amps)} AMPs + {len(sampled_non)} non-AMPs + {len(all_candidate_seqs)} candidatos)..."))
+
+            all_seqs = list(sampled_amps) + list(sampled_non) + list(all_candidate_seqs)
+            r3 = self.embedding_tool.run(sequences=all_seqs)
+            self._update_step(result, r3, callback)
+
+            if r3.status == "error":
+                result.total_duration = time.time() - start_total
+                return result
+
+            embeddings_all = r3.data["embeddings"]
+            clean_seqs_all = r3.data["sequences"]
+            embed_dim = embeddings_all.shape[1]
+
+            seq_to_emb = {}
+            for i, seq in enumerate(clean_seqs_all):
+                if seq not in seq_to_emb:
+                    seq_to_emb[seq] = embeddings_all[i]
 
         def get_aligned(seqs):
             """Get embeddings + properties aligned by valid sequences."""
@@ -136,7 +195,7 @@ class AgriAMPAgent:
                         embs.append(seq_to_emb[cs])
                         props.append(p)
                         valid.append(cs)
-            return (np.array(embs) if embs else np.empty((0, embeddings_all.shape[1])),
+            return (np.array(embs) if embs else np.empty((0, embed_dim)),
                     props, valid)
 
         # ═══════════════════════════════════════════════════════════
