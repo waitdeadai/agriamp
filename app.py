@@ -139,9 +139,13 @@ def render_sidebar():
 
         st.divider()
 
-        with st.expander("Parametros avanzados", expanded=False):
-            max_variants = st.slider("Max variantes por semilla", 50, 300, 150, 25)
-            tox_threshold = st.slider("Umbral toxicidad", 0.1, 0.8, 0.4, 0.05)
+        if not IS_CLOUD:
+            with st.expander("Parametros avanzados", expanded=False):
+                max_variants = st.slider("Max variantes por semilla", 50, 300, 150, 25)
+                tox_threshold = st.slider("Umbral toxicidad", 0.1, 0.8, 0.4, 0.05)
+        else:
+            max_variants = 150
+            tox_threshold = 0.4
 
         st.divider()
 
@@ -733,6 +737,10 @@ def main():
             _n_cands = len(df)
             _n_passed = int(df['passed_toxicity'].sum()) if 'passed_toxicity' in df.columns else 0
             st.caption(f"Pipeline completado en {_total_dur:.1f}s — {_n_cands} candidatos analizados, {_n_passed} pasaron screening de toxicidad")
+
+        _pinfo = PATHOGEN_INFO[pathogen]
+        st.markdown(f"### Resultados para *{pathogen}* ({_pinfo['common']})")
+        st.caption(f"{_pinfo['type']} | Cultivos: {_pinfo['crops']} | {_pinfo['impact']}")
 
         st.divider()
 
