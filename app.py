@@ -627,19 +627,19 @@ def render_caso_real(df: pd.DataFrame, pathogen: str):
         <h3>Caso Real: Botrytis cinerea en Mendoza</h3>
         <p style="font-size:1.05rem;">
             La podredumbre gris (<i>Botrytis cinerea</i>) es el hongo mas agresivo y
-            prevalente en los vinedos de Mendoza. Un estudio de CONICET en fincas de
-            la region documento perdidas de hasta <b>71% de racimos, 57% en volumen
-            y 53% en peso</b> cuando ocurren infecciones severas.
+            prevalente en los vinedos de Mendoza. La literatura reporta perdidas de
+            hasta <b>50-80% de la cosecha</b> en anos de infeccion severa, con impacto
+            significativo en rendimiento y calidad del fruto (PMC, Springer).
         </p>
     </div>
     """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric("Perdida en racimos", "71%", delta=None, help="Estudio CONICET, Mendoza")
+        st.metric("Perdida por Botrytis", "50-80%", delta=None, help="Rango en anos severos (PMC, Springer)")
         st.metric("Exportaciones vino ARG", "~$800M/ano", help="Mendoza = 75% produccion nacional")
     with col2:
-        st.metric("Perdida en volumen", "57%", delta=None, help="Volumen (cm3) afectado por Botrytis")
+        st.metric("Perdidas globales/ano", "~$2B USD", delta=None, help="Impacto economico global de B. cinerea")
         st.metric("Agroquimicos ARG/ano", "500M+ litros/kg", help="SPRINT-H2020, Mongabay 2020")
     with col3:
         st.metric("Perdida en peso", "53%", delta=None, help="Peso de cosecha perdido")
@@ -649,7 +649,7 @@ def render_caso_real(df: pd.DataFrame, pathogen: str):
 
     st.markdown("#### Crisis Regulatoria")
     st.markdown("""
-    - **Ban de neonicotinoides UE** (marzo 2026): clothianidin, imidacloprid, thiamethoxam prohibidos
+    - **Nuevos limites MRL de importacion UE** (marzo 2026): residuos de clothianidin y thiamethoxam prohibidos en productos importados (ban de uso outdoor desde 2018)
     - **Acuerdo EU-Mercosur**: Argentina tiene **106 principios activos prohibidos** en la UE — barrera para exportacion de vinos
     - **Resistencia documentada**: mutaciones duales SDHI + QoI en poblaciones de *B. cinerea* a nivel global
     - **Biopesticidas basados en peptidos aprobados para vid**: **ninguno** — oportunidad de mercado clara
@@ -661,14 +661,14 @@ def render_caso_real(df: pd.DataFrame, pathogen: str):
     st.markdown("""
     | AMP | MIC vs *B. cinerea* | Fuente | Referencia |
     |-----|---------------------|--------|------------|
-    | **Epinecidin-1** | 12.5 umol/L | *Epinephelus coioides* (mero) | J. Agric. Food Chem., 2022 |
-    | **EPI-4** (Epinecidin-1 + K) | **6 umol/L** (2x mejor) | Sintetico | ACS JAFC, 2015 |
+    | **Epinecidin-1** | 12.5 umol/L | *Epinephelus coioides* (mero) | Food Chemistry, 2022 |
+    | **EPI-4** (variante optimizada) | **6 umol/L** (2x mejor) | Sintetico | ACS JAFC, 2025 |
     | **Rs-AFP2** | 3 umol/L | *Raphanus sativus* (rabano) | Plant defensin literature |
     | **NaD1** | 2 umol/L | *Nicotiana alata* (tabaco) | Plant defensin literature |
 
-    La modificacion de Epinecidin-1 a EPI-4 (agregar lisina C-terminal) **es exactamente lo que
-    hace nuestro generador de variantes**: sustitucion con residuos cationicos (+K/R) para
-    aumentar carga y actividad antimicrobiana.
+    EPI-4 es una variante optimizada de Epinecidin-1 con sustituciones en la superficie polar
+    (Pan et al., JAFC 2025). Nuestro generador de variantes aplica estrategias similares:
+    sustitucion con residuos cationicos (+K/R) para aumentar carga y actividad antimicrobiana.
     """)
 
     # Show Epinecidin in results if present
@@ -734,7 +734,7 @@ def render_benchmark(metrics: dict):
             "MCC": 0.90,
             "Sensibilidad": None,
             "Especificidad": None,
-            "Ref": "Biol. Direct, 2020",
+            "Ref": "Bioinformatics, 2021",
         },
         {
             "Herramienta": "PLAPD",
@@ -745,12 +745,12 @@ def render_benchmark(metrics: dict):
             "MCC": 0.749,
             "Sensibilidad": None,
             "Especificidad": 0.946,
-            "Ref": "Methods Cell Biol., 2025",
+            "Ref": "Methods, 2025",
         },
         {
             "Herramienta": "AMP-RNNpro",
             "Ano": "2024",
-            "Metodo": "BiLSTM ensemble",
+            "Metodo": "RNN + prob. features",
             "Dataset": "Custom",
             "AUC": None,
             "MCC": None,

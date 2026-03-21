@@ -9,7 +9,7 @@
 ## El problema
 
 - **500M+ litros/kg** de agroquimicos por ano en Argentina (SPRINT-H2020)
-- **Botrytis cinerea** causa perdidas de hasta 71% en racimos de uva en Mendoza (CONICET)
+- **Botrytis cinerea** causa perdidas de hasta 50-80% de la cosecha en anos severos (PMC, Springer)
 - **106 principios activos** usados en Argentina estan prohibidos en la UE
 - Los patogenos desarrollan **resistencia** a pesticidas quimicos que atacan una sola via metabolica
 - **No existen fungicidas basados en peptidos** aprobados para vid — hay un gap de mercado claro
@@ -49,7 +49,7 @@ Entrenado sobre 2,600 AMPs + 2,600 non-AMPs del dataset modlAMP con embeddings p
 ## Validacion con datos reales
 
 - **Epinecidin-1** (MIC 12.5 umol/L vs B. cinerea, publicado en J. Agric. Food Chem.) aparece en los resultados
-- **EPI-4** (variante con +K terminal, MIC 6.0 umol/L) obtiene score superior (0.756 vs 0.712)
+- **EPI-4** (variante optimizada, MIC 6.0 umol/L) obtiene score superior (0.756 vs 0.712)
 - El pipeline identifica correctamente que la variante optimizada es mejor que el original
 
 ## Stack tecnico
