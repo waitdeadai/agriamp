@@ -942,9 +942,6 @@ def main():
         with st.spinner(_t("running_pipeline")):
             result = agent.run(pathogen=pathogen, callback=on_step)
 
-        # Clear live steps — results section has its own workflow expander
-        live_workflow.empty()
-
         if result.success:
             st.session_state.agent_result = {
                 "candidates": result.candidates,
@@ -952,7 +949,6 @@ def main():
                 "steps": [(s.tool_name, s.icon, s.status, s.message, s.duration) for s in result.steps],
                 "total_duration": result.total_duration,
             }
-            st.success(_t("pipeline_completed").format(dur=result.total_duration, n=len(result.candidates)))
 
             # Save precomputed results
             try:
@@ -971,6 +967,9 @@ def main():
                     json.dump(cache_data, f, default=str)
             except Exception:
                 pass  # Non-critical
+
+            # Force clean rerun — clears live pipeline steps, renders only results
+            st.rerun()
         else:
             st.error(_t("pipeline_error"))
 

@@ -200,35 +200,30 @@ def run_demo():
         else:
             print(f"  [{elapsed(t0)}] WARN: button/checkbox not found")
 
-        # Wait for pipeline
-        time.sleep(T["pipeline_running"])
-
+        # Wait for pipeline — after completion, st.rerun() fires and page reloads
+        # with only results visible (no live pipeline steps)
         try:
-            page.wait_for_selector('text=Pipeline completed', timeout=45000)
-            print(f"  [{elapsed(t0)}] Pipeline completed!")
+            # First wait for "Results for" which appears after st.rerun()
+            page.wait_for_selector('text=Results for', timeout=90000)
+            print(f"  [{elapsed(t0)}] Pipeline completed — results loaded!")
         except Exception:
-            try:
-                page.wait_for_selector('text=Results for', timeout=10000)
-                print(f"  [{elapsed(t0)}] Results loaded")
-            except Exception:
-                print(f"  [{elapsed(t0)}] WARN: timeout, continuing...")
+            print(f"  [{elapsed(t0)}] WARN: timeout waiting for results, continuing...")
 
         time.sleep(T["pipeline_result"])
 
-        # Scroll down so results are visible (hero + pre-tab content pushes tabs below fold)
+        # Scroll to tabs so results fill the viewport
         scroll_tabs_into_view(page)
         time.sleep(1)
 
-        # Expand workflow log to show 6 agentic steps with checkmarks
+        # Show workflow log briefly
         try:
             workflow_expander = page.locator('[data-testid="stExpander"]').filter(
                 has_text="steps completed"
             )
-            if workflow_expander.is_visible(timeout=5000):
+            if workflow_expander.is_visible(timeout=3000):
                 workflow_expander.first.click()
                 print(f"  [{elapsed(t0)}] Workflow steps expanded")
                 time.sleep(1)
-                # Scroll down to show all 6 steps
                 smooth_scroll(page, 300)
         except Exception:
             print(f"  [{elapsed(t0)}] WARN: could not expand workflow log")
