@@ -1,120 +1,107 @@
 DEMO NARRATION — AgriAMP (3 minutes)
-Read aloud. Natural pauses where you see (...) or (pause).
+Read aloud. Natural pauses where you see (pause).
 Tone: confident, conversational, not salesy. Smile on strong moments.
 Pace: ~140 words per minute. Do NOT rush.
 
 =============================================
-[0:00 - 0:15] DATA SHOCK — THE PROBLEM
+[0:00 - 0:12] DATA SHOCK — THE PROBLEM
 =============================================
 
 Fifty to eighty percent of a grape harvest — gone.
 
 In severe years, Botrytis cinerea can destroy entire vineyards.
-Argentina sprays over 500 million liters of agrochemicals per year,
-and pathogens keep developing resistance.
+Argentina sprays over five hundred million liters of agrochemicals
+per year, and pathogens keep developing resistance.
 
 =============================================
-[0:15 - 0:30] WHAT IS AgriAMP + WHY NOW
+[0:12 - 0:22] WHAT IS AgriAMP
 =============================================
 
 AgriAMP uses artificial intelligence to design a biological
 alternative: antimicrobial peptides.
 
-And the timing is now — in March 2026, the European Union enforces
-new residue limits for neonicotinoids on imports, with 106 Argentine
-active ingredients already banned in Europe.
-Our wine exports are at risk.
-
 =============================================
-[0:30 - 0:45] AMPs IN 15 SECONDS
+[0:22 - 0:42] AMPs IN 20 SECONDS
 =============================================
 
-Antimicrobial peptides have 3 billion years of evolution fighting
-pathogens. They physically destroy the invader's cell membrane.
+Antimicrobial peptides have three billion years of evolution
+fighting pathogens. They physically destroy the invader's
+cell membrane.
 
 A chemical pesticide attacks ONE metabolic pathway — the fungus
 mutates. An AMP attacks the membrane itself.
 It's the difference between picking a lock...
 and kicking the door down.
 
-(pause 2 seconds — let it land)
+(pause two seconds — let it land)
 
 =============================================
-[0:45 - 1:30] LIVE DEMO
+[0:42 - 1:20] LIVE DEMO
 =============================================
 
 We tell AgriAMP: I have Botrytis on my Malbec.
-And the agent runs 6 bioinformatics tools in sequence.
+And the agent runs six bioinformatics tools in sequence.
 
 (click pipeline — narrate as steps run, brisk pace)
 
-Querying a database of over 4,600 peptides...
-generating optimized variants...
-computing embeddings with ESM-2, Meta's protein language model —
-we use the 650-million-parameter variant...
-analyzing 12 biochemical properties...
+Querying peptide databases...
+computing embeddings with ESM-two...
 training the classifier...
 filtering for toxicity...
 done.
 
 (lower energy, serious tone)
 
-160 candidates analyzed in under 15 seconds.
+One hundred sixty candidates analyzed in under fifteen seconds.
 
 =============================================
-[1:30 - 2:00] PROOF: EPINECIDIN
+[1:20 - 1:50] PROOF: EPINECIDIN
 =============================================
 
 (firm tone — this is the strongest moment)
 
 This is not theoretical.
 
-Epinecidin-1 is a peptide from the grouper fish with published
+Epinecidin-one is a peptide from the grouper fish with published
 antifungal activity against Botrytis cinerea.
-Food Chemistry, 2022. MIC: 12.5 micromoles per liter.
+Food Chemistry, twenty twenty-two.
+MIC: twelve point five micromoles per liter.
 
-Researchers created EPI-4 — an optimized variant —
+Researchers created EPI-four — an optimized variant —
 and the activity doubled.
 
-And our pipeline confirms it: EPI-4 scores higher than
-Epinecidin-1.
+And our pipeline confirms it: EPI-four scores higher than
+Epinecidin-one.
 The system independently rediscovers what researchers
 validated in the lab.
 
 =============================================
-[2:00 - 2:20] METRICS
+[1:50 - 2:10] METRICS
 =============================================
 
-AUC 0.977. MCC 0.858. Accuracy 92.9 percent.
+AUC zero point nine seven seven.
+MCC zero point eight five eight.
+Accuracy ninety-two point nine percent.
 Five-fold stratified cross-validation, no data leakage,
-trained on 5,200 sequences.
-
-Competitive with published tools.
-We also run 106 automated tests — every biochemical calculation,
-toxicity threshold, adversarial edge cases, and scoring formula
-verified. All passing.
-
-But the differentiator is not the classifier —
-it's the end-to-end pipeline, from pathogen to synthesis-ready
-candidates.
+trained on five thousand two hundred sequences.
 
 =============================================
-[2:20 - 2:50] MARKET + NEXT STEPS
+[2:10 - 2:40] MARKET + NEXT STEPS
 =============================================
 
-Next step: chemical synthesis — 80 to 250 dollars per peptide —
-and in vitro inhibition assays.
+Next step: chemical synthesis and in vitro inhibition assays.
 
-The biopesticides market reaches 17 to 18 billion dollars by 2030.
-And today, there is no peptide-based biopesticide approved for
-grapevines.
+The biopesticides market reaches seventeen to eighteen billion
+dollars by twenty thirty.
+And today, there is no peptide-based biopesticide approved
+for grapevines.
 
 =============================================
-[2:50 - 3:00] CLOSE
+[2:40 - 2:50] CLOSE
 =============================================
 
 (look at camera, smile)
 
 AgriAMP — from your vineyard to the biological solution.
 
-(silence 3 seconds)
+(silence three seconds)

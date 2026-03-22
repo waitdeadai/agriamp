@@ -203,7 +203,20 @@ def run_demo():
 
         time.sleep(T["pipeline_result"])
 
-        # Show workflow log briefly
+        # Expand workflow log to show 6 agentic steps with checkmarks
+        try:
+            workflow_expander = page.locator('[data-testid="stExpander"]').filter(
+                has_text="steps completed"
+            )
+            if workflow_expander.is_visible(timeout=5000):
+                workflow_expander.first.click()
+                print(f"  [{elapsed(t0)}] Workflow steps expanded")
+                time.sleep(1)
+                # Scroll down to show all 6 steps
+                smooth_scroll(page, 400)
+        except Exception:
+            print(f"  [{elapsed(t0)}] WARN: could not expand workflow log")
+
         time.sleep(T["post_pipeline"])
 
         # ═══════════════════════════════════════
