@@ -213,7 +213,7 @@ def run_demo():
                 print(f"  [{elapsed(t0)}] Workflow steps expanded")
                 time.sleep(1)
                 # Scroll down to show all 6 steps
-                smooth_scroll(page, 400)
+                smooth_scroll(page, 300)
         except Exception:
             print(f"  [{elapsed(t0)}] WARN: could not expand workflow log")
 
@@ -231,12 +231,12 @@ def run_demo():
         time.sleep(T["caso_real_metrics"])
 
         # Scroll to validated AMPs table
-        smooth_scroll(page, 500)
+        smooth_scroll(page, 400)
         time.sleep(T["caso_real_scroll_1"])
         time.sleep(T["caso_real_table"])
 
         # Scroll to "Epinecidin in our results"
-        smooth_scroll(page, 400)
+        smooth_scroll(page, 350)
         time.sleep(T["caso_real_scroll_2"])
         time.sleep(T["caso_real_result"])
 
@@ -250,7 +250,7 @@ def run_demo():
 
         time.sleep(T["benchmark_table"])
 
-        smooth_scroll(page, 400)
+        smooth_scroll(page, 350)
         time.sleep(T["benchmark_scroll"])
         time.sleep(T["benchmark_chart"])
 
@@ -267,7 +267,7 @@ def run_demo():
         time.sleep(T["validacion_metrics"])
 
         # Scroll to ROC + confusion matrix
-        smooth_scroll(page, 350)
+        smooth_scroll(page, 300)
         time.sleep(T["validacion_scroll"])
 
         # Charts visible — narrate market and close over this

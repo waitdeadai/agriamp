@@ -84,6 +84,51 @@ st.markdown("""
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
+    /* ── Sidebar readability ── */
+    [data-testid="stSidebar"] .stMarkdown {
+        font-size: 0.88rem;
+        line-height: 1.45;
+    }
+    [data-testid="stSidebar"] .stMarkdown p {
+        margin-bottom: 0.3rem;
+    }
+    [data-testid="stSidebar"] [data-testid="stExpander"] .stMarkdown {
+        font-size: 0.82rem;
+        line-height: 1.4;
+    }
+    [data-testid="stSidebar"] .stDivider {
+        margin: 0.4rem 0;
+    }
+    .pathogen-card {
+        background: #f0f7f0;
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin: 6px 0;
+        font-size: 0.84rem;
+        line-height: 1.5;
+        border-left: 3px solid #2d8f2d;
+    }
+    .pathogen-card b { color: #1a5e1a; }
+    .sidebar-version {
+        font-size: 0.78rem;
+        color: #999;
+        text-align: center;
+        padding-top: 4px;
+        border-top: 1px solid #e0e0e0;
+        margin-top: 8px;
+    }
+    /* ── Compact results area ── */
+    .main .stExpander {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+    .main .stTabs [data-baseweb="tab-list"] {
+        gap: 2px;
+    }
+    .main .stAlert {
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.5rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -122,12 +167,12 @@ def render_sidebar():
         )
 
         info = pinfo[pathogen]
-        st.markdown(f"""
-        **{t['type']}:** {info['type']}
-        **{t['crops']}:** {info['crops']}
-        **{t['region']}:** {info['region']}
-        **{t['impact']}:** {info['impact']}
-        """)
+        st.markdown(f"""<div class="pathogen-card">
+<b>{t['type']}:</b> {info['type']}<br>
+<b>{t['crops']}:</b> {info['crops']}<br>
+<b>{t['region']}:</b> {info['region']}<br>
+<b>{t['impact']}:</b> {info['impact']}
+</div>""", unsafe_allow_html=True)
 
         st.divider()
 
@@ -165,11 +210,11 @@ def render_sidebar():
         with st.expander(t["how_agriamp_works"], expanded=False):
             st.markdown(t["agriamp_explanation"])
         st.divider()
-        st.markdown("""
-        **AgriAMP** v1.0
-        Aleph Hackathon M26 — Track Biotech
-        [GitHub](https://github.com/waitdeadai/agriamp)
-        """)
+        st.markdown("""<div class="sidebar-version">
+<b>AgriAMP</b> v1.0<br>
+Aleph Hackathon M26 — Track Biotech<br>
+<a href="https://github.com/waitdeadai/agriamp" target="_blank">GitHub</a>
+</div>""", unsafe_allow_html=True)
 
         return pathogen, run_button, load_precomputed, precomputed_path, max_variants, tox_threshold
 
@@ -218,7 +263,7 @@ def render_top_candidates(df: pd.DataFrame):
     )
     fig.add_hline(y=0.7, line_dash="dash", line_color="#4caf50", opacity=0.5,
                   annotation_text=t["threshold_line"])
-    fig.update_layout(height=400, xaxis_tickangle=-30)
+    fig.update_layout(height=340, xaxis_tickangle=-30)
     st.plotly_chart(fig, use_container_width=True)
 
     # Detailed table
@@ -239,7 +284,7 @@ def render_top_candidates(df: pd.DataFrame):
             "toxicity_risk": "{:.3f}",
         }).background_gradient(subset=["agriamp_score"], cmap="Greens"),
         use_container_width=True,
-        height=400,
+        height=350,
     )
 
 
@@ -294,7 +339,7 @@ def render_property_analysis(df: pd.DataFrame, metrics: dict):
         ))
         fig.update_layout(
             polar=dict(radialaxis=dict(visible=True, range=[0, 1])),
-            height=400,
+            height=340,
             showlegend=True,
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -313,7 +358,7 @@ def render_property_analysis(df: pd.DataFrame, metrics: dict):
                 color_continuous_scale="Greens",
                 title=t["top10_features"],
             )
-            fig2.update_layout(height=400, yaxis=dict(autorange="reversed"))
+            fig2.update_layout(height=340, yaxis=dict(autorange="reversed"))
             st.plotly_chart(fig2, use_container_width=True)
         else:
             st.info(t["no_feature_importance"])
@@ -327,20 +372,20 @@ def render_property_analysis(df: pd.DataFrame, metrics: dict):
                            color_discrete_sequence=["#2d8f2d"])
         fig.add_vline(x=2, line_dash="dash", line_color="red", annotation_text=t["min_ideal"])
         fig.add_vline(x=9, line_dash="dash", line_color="red", annotation_text=t["max_ideal"])
-        fig.update_layout(height=300)
+        fig.update_layout(height=260)
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         fig = px.histogram(df, x="hydrophobic_moment", nbins=30, title=t["hydrophobic_moment_title"],
                            color_discrete_sequence=["#1a5e1a"])
         fig.add_vline(x=0.3, line_dash="dash", line_color="red", annotation_text=t["amphipathicity_threshold"])
-        fig.update_layout(height=300)
+        fig.update_layout(height=260)
         st.plotly_chart(fig, use_container_width=True)
 
     with col3:
         fig = px.histogram(df, x="molecular_weight", nbins=30, title=t["molecular_weight_title"],
                            color_discrete_sequence=["#4caf50"])
-        fig.update_layout(height=300)
+        fig.update_layout(height=260)
         st.plotly_chart(fig, use_container_width=True)
 
 
@@ -428,7 +473,7 @@ def render_sequence_viewer(df: pd.DataFrame):
     _fig_comp = px.bar(_comp_df, x=t["contribution"], y=t["component"], orientation="h",
                        color=t["contribution"], color_continuous_scale="Greens",
                        title=f"Score total: {pep['agriamp_score']:.4f}")
-    _fig_comp.update_layout(height=250, showlegend=False, yaxis=dict(autorange="reversed"))
+    _fig_comp.update_layout(height=220, showlegend=False, yaxis=dict(autorange="reversed"))
     st.plotly_chart(_fig_comp, use_container_width=True)
 
     # Helical wheel projection
@@ -529,7 +574,7 @@ def render_validation(metrics: dict):
             ))
             fig_cm.update_layout(
                 title=t["confusion_matrix"],
-                height=350,
+                height=300,
                 xaxis_title=t["prediction"],
                 yaxis_title=t["actual"],
                 yaxis=dict(autorange="reversed"),
@@ -547,7 +592,7 @@ def render_validation(metrics: dict):
                 color=cv_scores,
                 color_continuous_scale="Greens",
             )
-            fig.update_layout(height=300)
+            fig.update_layout(height=260)
             st.plotly_chart(fig, use_container_width=True)
 
     with col2:
@@ -587,7 +632,7 @@ def render_validation(metrics: dict):
                 title=t["roc_curve"],
                 xaxis_title="False Positive Rate",
                 yaxis_title="True Positive Rate",
-                height=400,
+                height=340,
             )
             st.plotly_chart(fig, use_container_width=True)
 
@@ -745,7 +790,7 @@ def render_benchmark(metrics: dict):
             title=t["auc_chart_title"],
             yaxis_title="AUC-ROC",
             yaxis=dict(range=[0.85, 1.02]),
-            height=350,
+            height=300,
         )
         st.plotly_chart(fig, use_container_width=True)
 
@@ -879,54 +924,55 @@ def main():
 
         agent = get_agent()
 
-        # Agent workflow display
-        status_container = st.container()
-        with status_container:
-            st.subheader(_t("agentic_workflow"))
-            step_placeholder = st.empty()
-            steps_display = []
+        # Agent workflow display (live steps during pipeline execution)
+        live_workflow = st.empty()
+        steps_display = []
 
-            def on_step(step: AgentStep):
-                steps_display.append(step)
-                with step_placeholder.container():
-                    for s in steps_display:
-                        icon = {"success": "✅", "warning": "⚠️", "error": "❌", "running": "⏳"}.get(s.status, "⏳")
-                        with st.expander(f"{s.icon} {s.tool_name} {icon}", expanded=(s.status == "running")):
-                            st.markdown(s.message)
-                            if s.duration > 0:
-                                st.caption(f"{_t('duration')}: {s.duration:.1f}s")
+        def on_step(step: AgentStep):
+            steps_display.append(step)
+            with live_workflow.container():
+                st.subheader(_t("agentic_workflow"))
+                for s in steps_display:
+                    icon = {"success": "✅", "warning": "⚠️", "error": "❌", "running": "⏳"}.get(s.status, "⏳")
+                    with st.expander(f"{s.icon} {s.tool_name} {icon}", expanded=(s.status == "running")):
+                        st.markdown(s.message)
+                        if s.duration > 0:
+                            st.caption(f"{_t('duration')}: {s.duration:.1f}s")
 
-            with st.spinner(_t("running_pipeline")):
-                result = agent.run(pathogen=pathogen, callback=on_step)
+        with st.spinner(_t("running_pipeline")):
+            result = agent.run(pathogen=pathogen, callback=on_step)
 
-            if result.success:
-                st.session_state.agent_result = {
-                    "candidates": result.candidates,
-                    "metrics": result.metrics,
+        # Clear live steps — results section has its own workflow expander
+        live_workflow.empty()
+
+        if result.success:
+            st.session_state.agent_result = {
+                "candidates": result.candidates,
+                "metrics": result.metrics,
+                "steps": [(s.tool_name, s.icon, s.status, s.message, s.duration) for s in result.steps],
+                "total_duration": result.total_duration,
+            }
+            st.success(_t("pipeline_completed").format(dur=result.total_duration, n=len(result.candidates)))
+
+            # Save precomputed results
+            try:
+                cache_data = {
+                    "candidates": result.candidates.to_dict("records"),
+                    "metrics": {k: v for k, v in result.metrics.items()
+                                if isinstance(v, (int, float, str, list, dict, bool, type(None)))},
                     "steps": [(s.tool_name, s.icon, s.status, s.message, s.duration) for s in result.steps],
                     "total_duration": result.total_duration,
                 }
-                st.success(_t("pipeline_completed").format(dur=result.total_duration, n=len(result.candidates)))
-
-                # Save precomputed results
-                try:
-                    cache_data = {
-                        "candidates": result.candidates.to_dict("records"),
-                        "metrics": {k: v for k, v in result.metrics.items()
-                                    if isinstance(v, (int, float, str, list, dict, bool, type(None)))},
-                        "steps": [(s.tool_name, s.icon, s.status, s.message, s.duration) for s in result.steps],
-                        "total_duration": result.total_duration,
-                    }
-                    cache_path = os.path.join(
-                        os.path.dirname(__file__), "data", "precomputed",
-                        f"{pathogen.replace(' ', '_').lower()}.json"
-                    )
-                    with open(cache_path, "w") as f:
-                        json.dump(cache_data, f, default=str)
-                except Exception:
-                    pass  # Non-critical
-            else:
-                st.error(_t("pipeline_error"))
+                cache_path = os.path.join(
+                    os.path.dirname(__file__), "data", "precomputed",
+                    f"{pathogen.replace(' ', '_').lower()}.json"
+                )
+                with open(cache_path, "w") as f:
+                    json.dump(cache_data, f, default=str)
+            except Exception:
+                pass  # Non-critical
+        else:
+            st.error(_t("pipeline_error"))
 
     # Display results
     if st.session_state.agent_result is not None:
@@ -956,9 +1002,6 @@ def main():
         _pi = _pinfo()[pathogen]
         _t_str = STRINGS[_get_lang()]
         st.markdown(_t_str["results_for"].format(pathogen=pathogen, common=_pi['common']))
-        st.caption(f"{_pi['type']} | {_t_str['crops']}: {_pi['crops']} | {_pi['impact']}")
-
-        st.divider()
 
         # Results tabs
         tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
