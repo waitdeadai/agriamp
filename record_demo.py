@@ -92,8 +92,20 @@ def scroll_to_top(page):
     time.sleep(0.5)
 
 
+def scroll_tabs_into_view(page):
+    """Scroll so the tab bar sits near the top of the viewport."""
+    page.evaluate("""
+        const tabs = document.querySelector('[data-baseweb="tab-list"]');
+        if (tabs) {
+            tabs.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+    """)
+    time.sleep(0.8)
+
+
 def click_tab(page, tab_text):
-    """Click a Streamlit tab by text."""
+    """Click a Streamlit tab by text, ensuring tabs are visible first."""
+    scroll_tabs_into_view(page)
     page.locator('button[data-baseweb="tab"]').filter(has_text=tab_text).click()
     time.sleep(1.5)
 
@@ -203,6 +215,10 @@ def run_demo():
 
         time.sleep(T["pipeline_result"])
 
+        # Scroll down so results are visible (hero + pre-tab content pushes tabs below fold)
+        scroll_tabs_into_view(page)
+        time.sleep(1)
+
         # Expand workflow log to show 6 agentic steps with checkmarks
         try:
             workflow_expander = page.locator('[data-testid="stExpander"]').filter(
@@ -224,7 +240,6 @@ def run_demo():
         # Tab "Real Case": crop loss data + validated AMPs table + Epinecidin in results
         # ═══════════════════════════════════════
         print(f"[{elapsed(t0)}] Scene 4: Real Case — Epinecidin")
-        scroll_to_top(page)
         click_tab(page, "Real Case")
 
         # Crop loss metrics at top
@@ -245,7 +260,6 @@ def run_demo():
         # Tab "Benchmark vs SOTA": comparison table + AUC bar chart
         # ═══════════════════════════════════════
         print(f"[{elapsed(t0)}] Scene 5: Benchmark")
-        scroll_to_top(page)
         click_tab(page, "Benchmark")
 
         time.sleep(T["benchmark_table"])
@@ -260,7 +274,6 @@ def run_demo():
         # Narration: metrics → market → close
         # ═══════════════════════════════════════
         print(f"[{elapsed(t0)}] Scene 6: ML Validation + Close")
-        scroll_to_top(page)
         click_tab(page, "ML Validation")
 
         # 6 metrics at top
